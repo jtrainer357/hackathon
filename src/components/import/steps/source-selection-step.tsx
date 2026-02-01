@@ -26,7 +26,7 @@ export function SourceSelectionStep({ onSelect }: SourceSelectionStepProps) {
         <div className="space-y-6">
             <div className="text-center space-y-2">
                 <h2 className="text-2xl font-bold text-synapse-6">Where are you importing from?</h2>
-                <p className="text-synapse-3">We'll tailor the import experience to your source system.</p>
+                <p className="text-synapse-3">We&apos;ll tailor the import experience to your source system.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -1,6 +1,7 @@
 "use client"
 
 import React from 'react';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { NavigationItem } from './navigation-item';
 import {
@@ -30,8 +31,8 @@ export function NavigationRail() {
     return (
         <aside className="fixed left-0 top-0 bottom-0 z-50 hidden w-[80px] flex-col items-center border-r border-border bg-card py-8 md:flex">
             <div className="mb-10">
-                <div className="h-10 w-10 rounded-xl bg-growth-1 p-2">
-                    <img src="/Logo.svg" alt="Tebra" className="h-full w-full" />
+                <div className="h-10 w-10 rounded-xl bg-growth-1 p-2 relative">
+                    <Image src="/Logo.svg" alt="Tebra" fill className="object-contain" />
                 </div>
             </div>
 
@@ -54,8 +55,8 @@ export function NavigationRail() {
                     href="/notifications"
                     isActive={pathname === '/notifications'}
                 />
-                <div className="h-10 w-10 rounded-full bg-muted overflow-hidden">
-                    <img src="https://avatar.vercel.sh/provider" alt="Avatar" className="h-full w-full object-cover" />
+                <div className="h-10 w-10 rounded-full bg-muted overflow-hidden relative">
+                    <Image src="https://avatar.vercel.sh/provider" alt="Avatar" fill className="object-cover" />
                 </div>
             </div>
         </aside>

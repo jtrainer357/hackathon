@@ -8,10 +8,11 @@ import { Upload01Icon, File01Icon, CheckmarkCircle01Icon, AlertCircleIcon } from
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import type { UploadedFile } from '../import-wizard'
 
 interface UploadStepProps {
     sourceSystem: string
-    onComplete: (batchId: string, files: { name: string, type: string }[]) => void
+    onComplete: (batchId: string, files: UploadedFile[]) => void
 }
 
 interface UploadFile {

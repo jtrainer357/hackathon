@@ -47,7 +47,7 @@ export async function POST(
     // Get up to 3 sample rows
     const sampleRows = lines.slice(1, 4).map(line => {
         const values = parseCSVLine(line)
-        const row: any = {}
+        const row: Record<string, string | number | null> = {}
         headers.forEach((h, i) => {
             row[h] = values[i]
         })

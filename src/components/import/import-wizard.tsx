@@ -10,17 +10,23 @@ import { UploadStep } from './steps/upload-step'
 import { MappingStep } from './steps/mapping-step'
 import { PreviewStep } from './steps/preview-step'
 import { toast } from 'sonner'
-import { createClient } from '@/lib/supabase/client'
 import { CheckmarkCircle01Icon } from 'hugeicons-react'
+import type { ColumnMapping } from '@/lib/ai/gemini-import'
 
 export type ImportStep = 'source-selection' | 'upload' | 'mapping' | 'preview' | 'complete'
+
+// Type for uploaded files metadata
+export interface UploadedFile {
+    name: string
+    type: 'roster' | 'documents' | 'appointments'
+}
 
 export function ImportWizard() {
     const [currentStep, setCurrentStep] = React.useState<ImportStep>('source-selection')
     const [batchId, setBatchId] = React.useState<string | null>(null)
     const [sourceSystem, setSourceSystem] = React.useState<string | null>(null)
     const [progress, setProgress] = React.useState(0)
-    const [columnMappings, setColumnMappings] = React.useState<any[]>([])
+    const [columnMappings, setColumnMappings] = React.useState<ColumnMapping[]>([])
     const [isAnalyzing, setIsAnalyzing] = React.useState(false)
 
     // Step progression logic
@@ -30,7 +36,7 @@ export function ImportWizard() {
         setProgress(25)
     }
 
-    const handleUploadComplete = async (newBatchId: string, files: any[]) => {
+    const handleUploadComplete = async (newBatchId: string, files: UploadedFile[]) => {
         setBatchId(newBatchId)
         setCurrentStep('mapping')
         setProgress(50)
@@ -60,7 +66,7 @@ export function ImportWizard() {
         }
     }
 
-    const handleMappingConfirmed = (confirmedMappings: any[]) => {
+    const handleMappingConfirmed = (_confirmedMappings: ColumnMapping[]) => {
         // In a real app, confirm via API.
         // Move to next step (Preview or Complete)
         // For MVP Demo speed, we might jump to 'complete' for the "15-minute import" effect?
@@ -141,7 +147,7 @@ export function ImportWizard() {
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-synapse-6">Import Successful!</h2>
-                            <p className="text-synapse-3">We've imported your patients.</p>
+                            <p className="text-synapse-3">We&apos;ve imported your patients.</p>
                         </div>
                         <Button className="bg-vitality-1" onClick={() => window.location.href = '/'}>
                             Go to Dashboard

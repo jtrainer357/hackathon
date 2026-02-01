@@ -29,7 +29,10 @@ export type ColumnMapping = {
     transformType: 'none' | 'date_format' | 'phone_format' | 'name_split' | 'code_lookup'
 }
 
-export async function generateColumnMapping(headers: string[], sampleRows: any[]): Promise<ColumnMapping[]> {
+// Type for CSV row data (can contain strings, numbers, or null values)
+type CsvRowData = Record<string, string | number | null>
+
+export async function generateColumnMapping(headers: string[], sampleRows: CsvRowData[]): Promise<ColumnMapping[]> {
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
     const prompt = `
@@ -80,7 +83,7 @@ export async function generateColumnMapping(headers: string[], sampleRows: any[]
     }
 }
 
-export async function extractDocumentMetadata(documentText: string, knownPatientNames: string[]) {
+export async function extractDocumentMetadata(_documentText: string, _knownPatientNames: string[]) {
     // Placeholder - for PDF analysis step later
     return null
 }

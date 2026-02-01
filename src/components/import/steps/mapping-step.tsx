@@ -37,7 +37,7 @@ export function MappingStep({ mappings: initialMappings, onComplete }: MappingSt
         <div className="space-y-6">
             <div className="text-center space-y-2">
                 <h2 className="text-2xl font-bold text-synapse-6">Review Data Mapping</h2>
-                <p className="text-synapse-3">We've mapped your file columns to our system. Please review.</p>
+                <p className="text-synapse-3">We&apos;ve mapped your file columns to our system. Please review.</p>
             </div>
 
             <div className="space-y-4">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { ChevronDown, Building2, Check, Loader2 } from 'lucide-react';
 import {
@@ -22,35 +22,27 @@ interface PracticeSwitcherProps {
     onSwitch?: (practice: Practice) => Promise<void> | void;
 }
 
+// DEMO MODE: Load mock data if no props provided
+const demoPractices = [
+    { id: '1', name: 'Coastal Medical Group', slug: 'coastal-medical' },
+    { id: '2', name: 'Downtown Family Practice', slug: 'downtown-family' },
+    { id: '3', name: 'Westside Cardiology', slug: 'westside-cardio' },
+];
+
 export function PracticeSwitcher({
     practices: initialPractices,
     currentPractice: initialCurrent,
     onSwitch
 }: PracticeSwitcherProps) {
-    const [practices, setPractices] = useState<Practice[]>([]);
-    const [currentPractice, setCurrentPractice] = useState<Practice | null>(null);
-    const [isPending, startTransition] = useTransition();
-    const [isLoading, setIsLoading] = useState(true);
+    // Use props directly or fall back to demo data
+    const practices = initialPractices || demoPractices;
 
-    useEffect(() => {
-        if (initialPractices && initialCurrent) {
-            setPractices(initialPractices);
-            setCurrentPractice(initialCurrent);
-            setIsLoading(false);
-        } else {
-            // DEMO MODE: Load mock data if no props provided
-            // This ensures the component looks perfect in a fresh Design System install
-            // without requiring backend connection.
-            const demoPractices = [
-                { id: '1', name: 'Coastal Medical Group', slug: 'coastal-medical' },
-                { id: '2', name: 'Downtown Family Practice', slug: 'downtown-family' },
-                { id: '3', name: 'Westside Cardiology', slug: 'westside-cardio' },
-            ];
-            setPractices(demoPractices);
-            setCurrentPractice(demoPractices[0]);
-            setIsLoading(false);
-        }
-    }, [initialPractices, initialCurrent]);
+    // Track internal state only for demo mode (when no initialCurrent is provided)
+    const [internalCurrent, setInternalCurrent] = useState<Practice>(demoPractices[0]);
+    const [isPending, startTransition] = useTransition();
+
+    // Use controlled value from props if provided, otherwise use internal state
+    const currentPractice = initialCurrent || internalCurrent;
 
     const handleSwitch = (practice: Practice) => {
         if (practice.id === currentPractice?.id) return;
@@ -61,20 +53,11 @@ export function PracticeSwitcher({
             } else {
                 // Demo mode switch
                 await new Promise(resolve => setTimeout(resolve, 500)); // Fake network delay
-                setCurrentPractice(practice);
+                setInternalCurrent(practice);
                 toast.success(`Switched to ${practice.name}`);
             }
         });
     };
-
-    if (isLoading) {
-        return (
-            <div className="flex items-center gap-2 text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span className="text-lg">Loading...</span>
-            </div>
-        );
-    }
 
     // If only one practice, just show the name without dropdown
     if (practices.length <= 1) {
