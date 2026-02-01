@@ -1,4 +1,26 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mental Health MVP
+
+A modern, patient-centered mental health practice management platform built with Next.js, demonstrating UX transformation and AI engineering excellence.
+
+**Repository:** https://github.com/jtrainer357/hackathon
+**Owner:** Jay Trainer (UX Strategy & Prototype Lead)
+**Purpose:** Hackathon POC demonstrating UX transformation + AI engineering excellence
+**Quality Bar:** Production-ready, enterprise-grade code
+
+## Overview
+
+This project reimagines the mental health practice management experience with a focus on:
+- Patient-centered design and intuitive workflows
+- Modern, accessible UI with Tailwind CSS
+- Production-ready code architecture
+- AI-enhanced user experiences
+
+## Tech Stack
+
+- **Framework:** Next.js 16 with App Router
+- **UI:** Tailwind CSS 4, Framer Motion, Lucide Icons
+- **TypeScript:** Full type safety
+- **Styling:** Class Variance Authority, clsx, tailwind-merge
 
 ## Getting Started
 
@@ -10,27 +32,29 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+```
+mental-health-mvp/
+├── app/              # Next.js app directory
+├── components/       # React components
+├── public/          # Static assets
+└── styles/          # Global styles
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Development
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Repository
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+https://github.com/jtrainer357/hackathon
