@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
 import { Mic, MicOff } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
@@ -17,15 +17,11 @@ interface VoiceControlProps {
 export function VoiceControl({ onTranscript, className }: VoiceControlProps) {
   const [isListening, setIsListening] = useState(false)
   const [transcript, setTranscript] = useState("")
-  const [isSupported, setIsSupported] = useState(true)
+  const [isSupported] = useState(() => typeof window !== 'undefined' && voiceSystem.isSupported())
   const [showFallback, setShowFallback] = useState(false)
   const [failureCount, setFailureCount] = useState(0)
   const [showTranscript, setShowTranscript] = useState(false)
   const transcriptTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-
-  useEffect(() => {
-    setIsSupported(voiceSystem.isSupported())
-  }, [])
 
   const toggleListening = () => {
     if (isListening) {

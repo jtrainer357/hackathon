@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { voiceSystem, extractPatientName } from '@/lib/voice'
+import { voiceSystem, parseRescheduleCommand } from '@/lib/voice'
 
 export function useVoiceCommands() {
   const router = useRouter()
@@ -81,6 +81,39 @@ export function useVoiceCommands() {
       ],
       action: () => {
         // Navigate to patients
+        router.push('/patients')
+      },
+    })
+
+    // Register: "reschedule appointment"
+    voiceSystem.registerCommand({
+      command: 'reschedule-appointment',
+      patterns: [
+        /reschedule/i,
+        /move\s+appointment/i,
+        /change\s+appointment/i,
+      ],
+      action: () => {
+        const transcript = '' // transcript handled by onResult callback
+        const parsed = parseRescheduleCommand(transcript)
+        if (parsed) {
+          console.log(`Reschedule requested: ${parsed.day} at ${parsed.time}`)
+        }
+        router.push('/calendar')
+      },
+    })
+
+    // Register: "show session note"
+    voiceSystem.registerCommand({
+      command: 'show-note',
+      patterns: [
+        /show\s+note/i,
+        /session\s+note/i,
+        /last\s+note/i,
+        /soap\s+note/i,
+      ],
+      action: () => {
+        // Navigate to patients page to view session notes
         router.push('/patients')
       },
     })

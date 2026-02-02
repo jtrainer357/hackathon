@@ -1,5 +1,23 @@
 "use client"
 
+/**
+ * SOAPNoteGenerator - AI-generated clinical documentation component.
+ *
+ * Simulates the end-to-end flow of ambient session recording producing a
+ * structured SOAP note (Subjective, Objective, Assessment, Plan). The
+ * generation uses a cinematic 3-phase animation:
+ *
+ *   1. **Skeleton** - Pulsing placeholders while "AI processes" the session
+ *   2. **Revealing** - Sections cascade in with staggered Framer Motion transitions
+ *   3. **Complete** - Editable content with Sign & Lock for HITL compliance
+ *
+ * In production, the skeleton phase would await Gemini 2.0 Flash output from
+ * the Deepgram transcript. For the hackathon demo, pre-authored clinical
+ * notes demonstrate the UX without requiring a live AI call.
+ *
+ * @module care/soap-note-generator
+ */
+
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { DesignSystem } from "@/lib/design-system"

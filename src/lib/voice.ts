@@ -1,6 +1,16 @@
 /**
  * Voice Command System using Web Speech API
- * Enables voice-controlled navigation for the mental health MVP demo
+ *
+ * Core engine for the "Hey Tebra" voice-first interface. Provides wake-word
+ * detection, natural language command parsing, and confidence-based error
+ * handling. Designed for hands-free clinical workflows so therapists can
+ * navigate patients, start sessions, and control the app without touching
+ * the keyboard.
+ *
+ * Architecture:
+ *   Microphone -> Web Speech API -> Transcript -> Wake Word Filter -> Command Matcher -> Action
+ *
+ * @module voice
  */
 
 interface SpeechRecognitionEvent {
@@ -220,7 +230,13 @@ class VoiceCommandSystem {
 // Export singleton instance
 export const voiceSystem = new VoiceCommandSystem()
 
-// Helper function to extract patient name from voice command
+/**
+ * Extracts a patient name from a natural language voice transcript.
+ * Supports variations like "show me Sarah Chen", "open Tim Anders", "find patient Jones".
+ *
+ * @param transcript - Lowercased, trimmed transcript from Web Speech API
+ * @returns The extracted patient name, or null if no name pattern matched
+ */
 export function extractPatientName(transcript: string): string | null {
   // Patterns like "show me [name]", "open [name]", "find [name]"
   const patterns = [
@@ -241,7 +257,13 @@ export function extractPatientName(transcript: string): string | null {
   return null
 }
 
-// Helper function to parse appointment rescheduling commands
+/**
+ * Parses appointment rescheduling commands from voice input.
+ * Handles patterns like "reschedule to Thursday at 2pm" or "move appointment to Friday 3pm".
+ *
+ * @param transcript - Lowercased, trimmed transcript from Web Speech API
+ * @returns Object with extracted day and time, or null if no reschedule pattern matched
+ */
 export function parseRescheduleCommand(transcript: string): {
   day?: string
   time?: string
