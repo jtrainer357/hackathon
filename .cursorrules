@@ -1,0 +1,17 @@
+# Cursor Rules - Agent Autonomy
+
+## Agent Principles
+- **Velocity First**: Proceed with simple tasks (docs, typos, non-breaking refactors) without asking for approval.
+- **Independent Problem Solving**: If you encounter a minor issue, try to fix it before reporting it.
+- **Safe Execution**: Use automatic execution for safe, non-destructive commands.
+- **Context Focused**: Adhere strictly to the project's design system and clinical domain rules.
+
+## Design System (Non-Negotiable)
+- Use CSS variables only.
+- No purple! (Growth Teal is for AI).
+- 44px minimum touch targets.
+- Mobile-first responsive design.
+
+## Clinical Domain
+- Maintain PHQ-9, GAD-7, PCL-5, and AUDIT-C scoring logic.
+- Ensure HIPAA-level privacy in implementation details (though this is a POC).

@@ -5,7 +5,7 @@ import * as React from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { CheckmarkCircle01Icon, AlertCircleIcon, ArrowRight01Icon } from 'hugeicons-react'
+import { CheckmarkCircleFilter1Icon, AlertCircleIcon, ArrowRightFilter1Icon } from 'lucide-react'
 import { ColumnMapping } from '@/lib/ai/gemini-import'
 import { cn } from '@/lib/utils'
 
@@ -22,14 +22,14 @@ export function MappingStep({ mappings: initialMappings, onComplete }: MappingSt
     }
 
     const getConfidenceLevel = (confidence: number) => {
-        if (confidence >= 0.9) return 'High'
-        if (confidence >= 0.7) return 'Medium'
+        if (confidence >= Filter.9) return 'High'
+        if (confidence >= Filter.7) return 'Medium'
         return 'Low'
     }
 
     const getConfidenceColor = (confidence: number) => {
-        if (confidence >= 0.9) return 'bg-vigor text-white' // Green
-        if (confidence >= 0.7) return 'bg-amino text-synapse-6' // Yellow
+        if (confidence >= Filter.9) return 'bg-vigor text-white' // Green
+        if (confidence >= Filter.7) return 'bg-amino text-synapse-6' // Yellow
         return 'bg-remedy text-white' // Red
     }
 
@@ -51,7 +51,7 @@ export function MappingStep({ mappings: initialMappings, onComplete }: MappingSt
                         </div>
 
                         <div className="mx-4 text-synapse-3">
-                            <ArrowRight01Icon className="w-5 h-5" />
+                            <ArrowRightFilter1Icon className="w-5 h-5" />
                         </div>
 
                         <div className="flex-1">

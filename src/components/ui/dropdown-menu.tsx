@@ -1,11 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui"
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 
 import { cn } from "@/lib/utils"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Tick02Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { Check, ChevronRight, Circle } from "lucide-react"
 
 function DropdownMenu({
   ...props
@@ -106,7 +105,7 @@ function DropdownMenuCheckboxItem({
         data-slot="dropdown-menu-checkbox-item-indicator"
       >
         <DropdownMenuPrimitive.ItemIndicator>
-          <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} />
+          <Check className="h-4 w-4" />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -144,7 +143,7 @@ function DropdownMenuRadioItem({
         data-slot="dropdown-menu-radio-item-indicator"
       >
         <DropdownMenuPrimitive.ItemIndicator>
-          <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} />
+          <Check className="h-4 w-4" />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -220,7 +219,7 @@ function DropdownMenuSubTrigger({
       {...props}
     >
       {children}
-      <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} className="ml-auto" />
+      <ChevronRight className="ml-auto h-4 w-4" />
     </DropdownMenuPrimitive.SubTrigger>
   )
 }

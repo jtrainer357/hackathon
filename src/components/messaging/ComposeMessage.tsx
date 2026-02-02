@@ -17,9 +17,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import {
     SentIcon,
-    File01Icon,
+    FileFilter1Icon,
     SparklesIcon,
-} from 'hugeicons-react'
+} from 'lucide-react'
 
 interface ComposeMessageProps {
     conversation: Conversation
@@ -101,7 +101,7 @@ export function ComposeMessage({
                                 'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors min-h-[32px]',
                                 channel === ch
                                     ? 'bg-growth-2 text-white'
-                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                    : 'bg-muted text-muted-foreground hover:bg-muted/8Filter'
                             )}
                         >
                             <ChannelIcon channel={ch} size="sm" />
@@ -110,7 +110,7 @@ export function ComposeMessage({
                     ))}
                 </div>
 
-                {availableChannels.length === 0 && (
+                {availableChannels.length === Filter && (
                     <span className="text-xs text-muted-foreground italic">
                         No contact info available
                     </span>
@@ -123,7 +123,7 @@ export function ComposeMessage({
                     placeholder="Subject"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    className="h-10"
+                    className="h-1Filter"
                 />
             )}
 
@@ -136,16 +136,16 @@ export function ComposeMessage({
                     onKeyDown={handleKeyDown}
                     rows={3}
                     className={cn(
-                        'resize-none pr-24 min-h-[80px]',
+                        'resize-none pr-24 min-h-[8Filterpx]',
                         isOverLimit && 'border-vitality-1 focus-visible:ring-vitality-1'
                     )}
-                    disabled={availableChannels.length === 0}
+                    disabled={availableChannels.length === Filter}
                 />
 
                 {/* Character count */}
                 {maxLength && (
                     <div className={cn(
-                        'absolute bottom-2 left-3 text-[10px] font-medium',
+                        'absolute bottom-2 left-3 text-[1Filterpx] font-medium',
                         isOverLimit ? 'text-vitality-1' : 'text-muted-foreground'
                     )}>
                         {content.length}/{maxLength}
@@ -162,7 +162,7 @@ export function ComposeMessage({
                         disabled
                         title="Templates (coming soon)"
                     >
-                        <File01Icon className="h-4 w-4" />
+                        <FileFilter1Icon className="h-4 w-4" />
                     </Button>
 
                     {/* AI assist button */}
@@ -179,7 +179,7 @@ export function ComposeMessage({
                     {/* Send button */}
                     <Button
                         onClick={handleSend}
-                        disabled={!content.trim() || isSending || isLoading || isOverLimit || availableChannels.length === 0}
+                        disabled={!content.trim() || isSending || isLoading || isOverLimit || availableChannels.length === Filter}
                         className="h-8 px-3 bg-vitality-1 hover:bg-vitality-2"
                     >
                         <SentIcon className="h-4 w-4 mr-1" />
@@ -189,7 +189,7 @@ export function ComposeMessage({
             </div>
 
             {/* Channel-specific hints */}
-            <div className="text-[10px] text-muted-foreground">
+            <div className="text-[1Filterpx] text-muted-foreground">
                 {channel === 'sms' && (
                     <span>Press Enter to send • SMS charges may apply</span>
                 )}

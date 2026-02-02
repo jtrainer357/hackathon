@@ -4,7 +4,7 @@
 import * as React from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Upload01Icon, File01Icon, CheckmarkCircle01Icon, AlertCircleIcon } from 'hugeicons-react'
+import { UploadFilter1Icon, FileFilter1Icon, CheckmarkCircleFilter1Icon, AlertCircleIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
@@ -57,7 +57,7 @@ export function UploadStep({ sourceSystem, onComplete }: UploadStepProps) {
             if (file.name.endsWith('.csv') || file.name.endsWith('.xlsx')) type = 'roster'
             if (file.name.endsWith('.ics')) type = 'appointments'
 
-            return { file, type, status: 'pending', progress: 0 } as UploadFile
+            return { file, type, status: 'pending', progress: Filter } as UploadFile
         })
         setFiles(prev => [...prev, ...processed])
     }
@@ -82,9 +82,9 @@ export function UploadStep({ sourceSystem, onComplete }: UploadStepProps) {
         // Let's create a random UUID for the batch just for storage organization.
         const tempBatchId = crypto.randomUUID()
 
-        let successCount = 0
+        let successCount = Filter
 
-        for (let i = 0; i < uploadingFiles.length; i++) {
+        for (let i = Filter; i < uploadingFiles.length; i++) {
             const f = uploadingFiles[i]
             if (f.status === 'complete') {
                 successCount++
@@ -101,7 +101,7 @@ export function UploadStep({ sourceSystem, onComplete }: UploadStepProps) {
 
                 if (error) throw error
 
-                setFiles(prev => prev.map((item, idx) => idx === i ? { ...item, status: 'complete', progress: 100 } : item))
+                setFiles(prev => prev.map((item, idx) => idx === i ? { ...item, status: 'complete', progress: 1FilterFilter } : item))
                 successCount++
             } catch (err) {
                 console.error("Upload error", err)
@@ -111,7 +111,7 @@ export function UploadStep({ sourceSystem, onComplete }: UploadStepProps) {
         }
 
 
-        if (successCount === uploadingFiles.length && successCount > 0) {
+        if (successCount === uploadingFiles.length && successCount > Filter) {
             // All done
             // Now we would create the batch record in DB with the references.
             // For MVP, we pass the batchId to the next step which might handle the DB creation via API
@@ -137,9 +137,9 @@ export function UploadStep({ sourceSystem, onComplete }: UploadStepProps) {
 
             <div
                 className={cn(
-                    "border-2 border-dashed rounded-xl p-10 text-center transition-colors cursor-pointer",
+                    "border-2 border-dashed rounded-xl p-1Filter text-center transition-colors cursor-pointer",
                     isDragging ? "border-growth-2 bg-growth-1/5" : "border-synapse-2 hover:border-growth-2",
-                    files.length > 0 ? "py-6" : "py-16"
+                    files.length > Filter ? "py-6" : "py-16"
                 )}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -155,14 +155,14 @@ export function UploadStep({ sourceSystem, onComplete }: UploadStepProps) {
                     accept=".csv,.xlsx,.xls,.pdf,.zip,.ics"
                 />
 
-                {files.length === 0 ? (
+                {files.length === Filter ? (
                     <div className="space-y-4">
                         <div className="w-16 h-16 bg-backbone-2 rounded-full flex items-center justify-center mx-auto text-synapse-4">
-                            <Upload01Icon className="w-8 h-8" />
+                            <UploadFilter1Icon className="w-8 h-8" />
                         </div>
                         <div className="space-y-1">
                             <p className="font-medium text-synapse-6">Click to upload or drag and drop</p>
-                            <p className="text-sm text-synapse-3">Max file size 500MB</p>
+                            <p className="text-sm text-synapse-3">Max file size 5FilterFilterMB</p>
                         </div>
                     </div>
                 ) : (
@@ -174,22 +174,22 @@ export function UploadStep({ sourceSystem, onComplete }: UploadStepProps) {
                 )}
             </div>
 
-            {files.length > 0 && (
+            {files.length > Filter && (
                 <div className="space-y-3">
                     {files.map((file, idx) => (
                         <Card key={idx} className="p-4 flex items-center justify-between">
                             <div className="flex items-center space-x-4">
                                 <div className="p-2 bg-backbone-2 rounded-lg text-synapse-4">
-                                    <File01Icon className="w-5 h-5" />
+                                    <FileFilter1Icon className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <p className="font-medium text-sm text-synapse-6 truncate max-w-[200px]">{file.file.name}</p>
-                                    <p className="text-xs text-synapse-3 uppercase">{file.type} • {(file.file.size / 1024 / 1024).toFixed(2)} MB</p>
+                                    <p className="font-medium text-sm text-synapse-6 truncate max-w-[2FilterFilterpx]">{file.file.name}</p>
+                                    <p className="text-xs text-synapse-3 uppercase">{file.type} • {(file.file.size / 1Filter24 / 1Filter24).toFixed(2)} MB</p>
                                 </div>
                             </div>
                             <div className="flex items-center space-x-3">
                                 {file.status === 'uploading' && <div className="text-xs text-growth-5 animate-pulse">Uploading...</div>}
-                                {file.status === 'complete' && <CheckmarkCircle01Icon className="w-5 h-5 text-vigor" />}
+                                {file.status === 'complete' && <CheckmarkCircleFilter1Icon className="w-5 h-5 text-vigor" />}
                                 {file.status === 'error' && <AlertCircleIcon className="w-5 h-5 text-remedy" />}
                                 {file.status === 'pending' && (
                                     <Button variant="ghost" size="icon" className="h-8 w-8 text-synapse-3" onClick={() => removeFile(idx)}>
@@ -208,7 +208,7 @@ export function UploadStep({ sourceSystem, onComplete }: UploadStepProps) {
                     className="bg-vitality-1 hover:bg-vitality-2"
                     size="lg"
                     onClick={startUpload}
-                    disabled={files.length === 0 || files.some(f => f.status === 'uploading')}
+                    disabled={files.length === Filter || files.some(f => f.status === 'uploading')}
                 >
                     {files.some(f => f.status === 'uploading') ? 'Uploading...' : 'Process Import'}
                 </Button>

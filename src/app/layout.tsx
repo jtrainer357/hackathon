@@ -4,6 +4,7 @@ import './globals.css';
 import { NavigationRail } from '@/components/layout/navigation-rail';
 import { BottomNavigation } from '@/components/layout/bottom-navigation';
 import { DashboardHeader } from '@/components/layout/dashboard-header';
+import { VoiceProvider } from '@/components/voice/VoiceProvider';
 
 const akkuratLL = localFont({
   src: [
@@ -77,14 +78,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${akkuratLL.variable} font-sans antialiased`}>
-        <NavigationRail />
-        <main className="ml-0 md:ml-[80px] flex min-h-screen flex-col transition-all duration-300 ease-in-out pb-24 md:pb-0">
-          <DashboardHeader />
-          <div className="flex-1 overflow-auto">
-            {children}
-          </div>
-        </main>
-        <BottomNavigation />
+        <VoiceProvider>
+          <NavigationRail />
+          <main className="ml-0 md:ml-[88px] flex min-h-screen flex-col transition-all duration-300 ease-in-out pb-24 md:pb-0">
+            <DashboardHeader />
+            <div className="flex-1 overflow-auto">
+              {children}
+            </div>
+          </main>
+          <BottomNavigation />
+        </VoiceProvider>
       </body>
     </html>
   );

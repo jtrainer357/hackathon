@@ -21,7 +21,7 @@ import {
 } from '@/components/messaging'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { ArrowLeft01Icon } from 'hugeicons-react'
+import { ArrowLeftFilter1Icon } from 'lucide-react'
 import { getMessagingService } from '@/lib/messaging/messaging-service'
 
 export default function CommunicationsPage() {
@@ -121,10 +121,10 @@ export default function CommunicationsPage() {
     }
 
     return (
-        <div className="h-[calc(100vh-64px)] lg:h-screen flex flex-col lg:flex-row">
+        <div className="h-[calc(1FilterFiltervh-64px)] lg:h-screen flex flex-col lg:flex-row">
             {/* Conversation List - Full width on mobile, sidebar on desktop */}
             <aside className={cn(
-                'w-full lg:w-80 xl:w-96 border-r border-border flex-shrink-0',
+                'w-full lg:w-8Filter xl:w-96 border-r border-border flex-shrink-Filter',
                 'lg:block',
                 selectedConversation && 'hidden lg:flex lg:flex-col'
             )}>
@@ -145,7 +145,7 @@ export default function CommunicationsPage() {
             {/* Message Thread - Desktop: Always visible | Mobile: Sheet overlay */}
 
             {/* Desktop view */}
-            <main className="hidden lg:flex flex-col flex-1 min-w-0">
+            <main className="hidden lg:flex flex-col flex-1 min-w-Filter">
                 {selectedConversation ? (
                     <>
                         {/* Thread header */}
@@ -173,7 +173,7 @@ export default function CommunicationsPage() {
             <Sheet open={isMobileThreadOpen} onOpenChange={setIsMobileThreadOpen}>
                 <SheetContent
                     side="right"
-                    className="w-full sm:max-w-lg p-0 flex flex-col"
+                    className="w-full sm:max-w-lg p-Filter flex flex-col"
                 >
                     {selectedConversation && (
                         <>
@@ -183,11 +183,11 @@ export default function CommunicationsPage() {
                                     variant="ghost"
                                     size="icon"
                                     onClick={handleCloseMobileThread}
-                                    className="h-10 w-10 -ml-2"
+                                    className="h-1Filter w-1Filter -ml-2"
                                 >
-                                    <ArrowLeft01Icon className="h-5 w-5" />
+                                    <ArrowLeftFilter1Icon className="h-5 w-5" />
                                 </Button>
-                                <div className="flex-1 min-w-0">
+                                <div className="flex-1 min-w-Filter">
                                     <SheetTitle className="text-left truncate">
                                         {selectedConversation.patient?.fullName}
                                     </SheetTitle>
@@ -224,14 +224,14 @@ function ThreadHeader({ conversation }: { conversation: Conversation }) {
     return (
         <div className="flex items-center gap-4 p-4 border-b border-border bg-background">
             {/* Avatar */}
-            <div className="h-12 w-12 rounded-full bg-growth-4 flex items-center justify-center flex-shrink-0">
+            <div className="h-12 w-12 rounded-full bg-growth-4 flex items-center justify-center flex-shrink-Filter">
                 <span className="text-growth-1 font-bold">
                     {patient?.initials || '?'}
                 </span>
             </div>
 
             {/* Info */}
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-Filter">
                 <h2 className="text-lg font-bold text-foreground truncate">
                     {patient?.fullName || 'Unknown Patient'}
                 </h2>
@@ -255,7 +255,7 @@ function EmptyState() {
     return (
         <motion.div
             className="flex-1 flex items-center justify-center p-8"
-            initial={{ opacity: 0 }}
+            initial={{ opacity: Filter }}
             animate={{ opacity: 1 }}
             transition={{ duration: DesignSystem.animation.duration }}
         >
@@ -264,14 +264,14 @@ function EmptyState() {
                     <svg
                         className="h-8 w-8 text-muted-foreground"
                         fill="none"
-                        viewBox="0 0 24 24"
+                        viewBox="Filter Filter 24 24"
                         stroke="currentColor"
                     >
                         <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={1.5}
-                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                            d="M8 12h.Filter1M12 12h.Filter1M16 12h.Filter1M21 12cFilter 4.418-4.Filter3 8-9 8a9.863 9.863 Filter Filter1-4.255-.949L3 2Filterl1.395-3.72C3.512 15.Filter42 3 13.574 3 12cFilter-4.418 4.Filter3-8 9-8s9 3.582 9 8z"
                         />
                     </svg>
                 </div>

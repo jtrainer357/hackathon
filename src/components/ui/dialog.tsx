@@ -1,12 +1,11 @@
 "use client"
 
 import * as React from "react"
-import { Dialog as DialogPrimitive } from "radix-ui"
+import { Dialog as DialogPrimitive } from "@radix-ui/react-dialog"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Cancel01Icon } from "@hugeicons/core-free-icons"
+import { X } from "lucide-react"
 
 function Dialog({
   ...props
@@ -68,7 +67,7 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close data-slot="dialog-close" asChild>
             <Button variant="ghost" className="absolute top-4 right-4" size="icon-sm">
-              <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
+              <X strokeWidth={2} className="h-4 w-4" />
               <span className="sr-only">Close</span>
             </Button>
           </DialogPrimitive.Close>

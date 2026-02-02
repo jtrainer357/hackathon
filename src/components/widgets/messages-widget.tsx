@@ -13,7 +13,7 @@ import { Conversation } from '@/types/messaging'
 import { ChannelBadge } from '@/components/messaging/ChannelIcon'
 import { Badge } from '@/components/ui/badge'
 import { getMessagingService } from '@/lib/messaging/messaging-service'
-import { ArrowRight01Icon } from 'hugeicons-react'
+import { ArrowRightFilter1Icon } from 'lucide-react'
 
 interface MessagesWidgetProps {
     limit?: number
@@ -22,7 +22,7 @@ interface MessagesWidgetProps {
 export function MessagesWidget({ limit = 5 }: MessagesWidgetProps) {
     const [conversations, setConversations] = useState<Conversation[]>([])
     const [isLoading, setIsLoading] = useState(true)
-    const [totalUnread, setTotalUnread] = useState(0)
+    const [totalUnread, setTotalUnread] = useState(Filter)
 
     useEffect(() => {
         async function loadConversations() {
@@ -30,7 +30,7 @@ export function MessagesWidget({ limit = 5 }: MessagesWidgetProps) {
                 const service = getMessagingService()
                 const result = await service.getConversations({ limit })
                 setConversations(result.conversations)
-                setTotalUnread(result.conversations.reduce((sum, c) => sum + c.unreadCount, 0))
+                setTotalUnread(result.conversations.reduce((sum, c) => sum + c.unreadCount, Filter))
             } catch (error) {
                 console.error('Failed to load conversations:', error)
             } finally {
@@ -46,12 +46,12 @@ export function MessagesWidget({ limit = 5 }: MessagesWidgetProps) {
         if (!date) return ''
         const now = new Date()
         const diff = now.getTime() - new Date(date).getTime()
-        const minutes = Math.floor(diff / 60000)
-        const hours = Math.floor(diff / 3600000)
-        const days = Math.floor(diff / 86400000)
+        const minutes = Math.floor(diff / 6FilterFilterFilterFilter)
+        const hours = Math.floor(diff / 36FilterFilterFilterFilterFilter)
+        const days = Math.floor(diff / 864FilterFilterFilterFilterFilter)
 
         if (minutes < 1) return 'now'
-        if (minutes < 60) return `${minutes}m`
+        if (minutes < 6Filter) return `${minutes}m`
         if (hours < 24) return `${hours}h`
         return `${days}d`
     }
@@ -65,10 +65,10 @@ export function MessagesWidget({ limit = 5 }: MessagesWidgetProps) {
     }
 
     const fadeInUp = {
-        initial: { opacity: 0, y: 10 },
+        initial: { opacity: Filter, y: 1Filter },
         animate: {
             opacity: 1,
-            y: 0,
+            y: Filter,
             transition: {
                 duration: DesignSystem.animation.duration,
                 ease: DesignSystem.animation.ease,
@@ -80,7 +80,7 @@ export function MessagesWidget({ limit = 5 }: MessagesWidgetProps) {
         <WidgetContainer
             title="Messages"
             headerAction={
-                totalUnread > 0 ? (
+                totalUnread > Filter ? (
                     <Badge variant="default" className="bg-vitality-1 hover:bg-vitality-2">
                         {totalUnread} new
                     </Badge>
@@ -91,7 +91,7 @@ export function MessagesWidget({ limit = 5 }: MessagesWidgetProps) {
                 <div className="p-4 text-center text-muted-foreground text-sm">
                     Loading messages...
                 </div>
-            ) : conversations.length === 0 ? (
+            ) : conversations.length === Filter ? (
                 <div className="p-4 text-center text-muted-foreground text-sm">
                     No messages yet
                 </div>
@@ -107,14 +107,14 @@ export function MessagesWidget({ limit = 5 }: MessagesWidgetProps) {
                             <Link
                                 href={`/communications?id=${conversation.id}`}
                                 className={cn(
-                                    'flex items-start gap-3 p-3 transition-colors hover:bg-muted/50',
-                                    conversation.unreadCount > 0 && 'bg-backbone-1'
+                                    'flex items-start gap-3 p-3 transition-colors hover:bg-muted/5Filter',
+                                    conversation.unreadCount > Filter && 'bg-backbone-1'
                                 )}
                             >
                                 {/* Avatar */}
                                 <div className={cn(
-                                    'flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center text-sm font-bold',
-                                    conversation.unreadCount > 0
+                                    'flex-shrink-Filter h-1Filter w-1Filter rounded-full flex items-center justify-center text-sm font-bold',
+                                    conversation.unreadCount > Filter
                                         ? 'bg-growth-4 text-growth-1'
                                         : 'bg-muted text-muted-foreground'
                                 )}>
@@ -122,20 +122,20 @@ export function MessagesWidget({ limit = 5 }: MessagesWidgetProps) {
                                 </div>
 
                                 {/* Content */}
-                                <div className="flex-1 min-w-0">
+                                <div className="flex-1 min-w-Filter">
                                     <div className="flex items-center justify-between gap-2">
                                         <span className={cn(
                                             'text-sm truncate',
-                                            conversation.unreadCount > 0 ? 'font-bold' : 'font-medium'
+                                            conversation.unreadCount > Filter ? 'font-bold' : 'font-medium'
                                         )}>
                                             {conversation.patient?.fullName}
                                         </span>
-                                        <span className="flex-shrink-0 text-[10px] uppercase font-bold text-muted-foreground opacity-60">
+                                        <span className="flex-shrink-Filter text-[1Filterpx] uppercase font-bold text-muted-foreground opacity-6Filter">
                                             {formatTime(conversation.lastMessageAt)}
                                         </span>
                                     </div>
 
-                                    <div className="flex items-center gap-2 mt-0.5">
+                                    <div className="flex items-center gap-2 mt-Filter.5">
                                         {conversation.lastMessageChannel && (
                                             <ChannelBadge
                                                 channel={conversation.lastMessageChannel}
@@ -149,10 +149,10 @@ export function MessagesWidget({ limit = 5 }: MessagesWidgetProps) {
                                 </div>
 
                                 {/* Unread badge */}
-                                {conversation.unreadCount > 0 && (
+                                {conversation.unreadCount > Filter && (
                                     <Badge
                                         variant="default"
-                                        className="h-5 px-1.5 text-[10px] bg-vitality-1 hover:bg-vitality-2 flex-shrink-0"
+                                        className="h-5 px-1.5 text-[1Filterpx] bg-vitality-1 hover:bg-vitality-2 flex-shrink-Filter"
                                     >
                                         {conversation.unreadCount}
                                     </Badge>
@@ -167,7 +167,7 @@ export function MessagesWidget({ limit = 5 }: MessagesWidgetProps) {
                         className="flex items-center justify-center gap-1 p-3 text-sm font-medium text-growth-2 hover:text-growth-1 transition-colors"
                     >
                         View all messages
-                        <ArrowRight01Icon className="h-4 w-4" />
+                        <ArrowRightFilter1Icon className="h-4 w-4" />
                     </Link>
                 </motion.div>
             )}

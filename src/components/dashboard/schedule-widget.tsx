@@ -6,13 +6,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { WidgetContainer } from "@/components/ui/widget-container"
 import {
-    HugeiconsIcon,
-} from "@hugeicons/react"
-import {
-    Clock01Icon,
-    Location01Icon,
-    Settings01Icon
-} from "@hugeicons/core-free-icons"
+    Clock,
+    MapPin,
+    Settings
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const appointments = [
@@ -192,7 +189,7 @@ export function ScheduleWidget() {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground opacity-70">Priority Action</span>
-                            <HugeiconsIcon icon={Settings01Icon} className="h-4 w-4 text-muted-foreground" />
+                            <Settings className="h-4 w-4 text-muted-foreground" />
                         </div>
                         <div className="font-bold text-lg leading-none mb-1 text-foreground">Michael Chen is arriving</div>
                         <div className="text-sm text-muted-foreground">9:30 AM appointment • Room 101</div>
@@ -214,7 +211,7 @@ export function ScheduleWidget() {
                             )}
                         >
                             <div className="w-28 shrink-0 flex items-center gap-2 text-muted-foreground font-medium text-sm">
-                                <HugeiconsIcon icon={Clock01Icon} className="h-5 w-5 opacity-50" />
+                                <Clock className="h-5 w-5 opacity-50" />
                                 {apt.time}
                             </div>
 
@@ -250,7 +247,7 @@ export function ScheduleWidget() {
                             </div>
 
                             <div className="w-28 flex items-center justify-end gap-1 text-muted-foreground text-[10px] font-bold uppercase tracking-widest shrink-0 opacity-60">
-                                <HugeiconsIcon icon={Location01Icon} className="h-4 w-4" />
+                                <MapPin className="h-4 w-4" />
                                 {apt.room}
                             </div>
                         </div>

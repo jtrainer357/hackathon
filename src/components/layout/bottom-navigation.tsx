@@ -1,24 +1,23 @@
 "use client"
 
-import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
-    Home05Icon,
-    UserMultiple02Icon,
-    Calendar03Icon,
-    Chat01Icon
-} from 'hugeicons-react';
+    Home,
+    Users,
+    Calendar,
+    MessageCircle
+} from 'lucide-react';
 
 export function BottomNavigation() {
     const pathname = usePathname();
 
     const navItems = [
-        { icon: Home05Icon, label: 'Home', href: '/' },
-        { icon: UserMultiple02Icon, label: 'Patients', href: '/patients' },
-        { icon: Calendar03Icon, label: 'Calendar', href: '/calendar' },
-        { icon: Chat01Icon, label: 'Chat', href: '/communications' },
+        { icon: Home, label: 'Home', href: '/' },
+        { icon: Users, label: 'Patients', href: '/patients' },
+        { icon: Calendar, label: 'Calendar', href: '/calendar' },
+        { icon: MessageCircle, label: 'Chat', href: '/communications' },
     ];
 
     return (
@@ -35,7 +34,7 @@ export function BottomNavigation() {
                         )}
                     >
                         <item.icon className={cn("h-6 w-6", isActive && "fill-current")} />
-                        <span className="text-[10px] font-bold uppercase tracking-wider">{item.label}</span>
+                        <span className="text-[11px] font-bold uppercase tracking-wider">{item.label}</span>
                     </Link>
                 );
             })}

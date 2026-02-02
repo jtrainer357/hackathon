@@ -1,0 +1,16 @@
+# Cline Rules - Agent Autonomy
+
+## Core Directive
+Keep moving forward. Do not wait for approval on simple tasks or obvious next steps.
+
+## Power Usage
+- Use `SafeToAutoRun: true` for all non-destructive reconnaissance and build commands.
+- Be proactive in updating `PROGRESS_LOG.md` with high detail.
+- Follow the "Patient-as-Central-Object" architecture at all times.
+
+## Design Constraints
+- Growth Teal (AI Features)
+- Vitality Coral (Actions)
+- Backbone (Backgrounds)
+- Synapse (Text)
+- **NO PURPLE.**

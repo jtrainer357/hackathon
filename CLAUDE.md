@@ -12,6 +12,14 @@
 **Repository:** github.com/jtrainer357/hackathon  
 **Owner:** Jay Trainer (UX Strategy & Prototype Lead)  
 
+## AGENT AUTONOMY & EFFICIENCY
+
+> **PROGRESS OVER PERMISSION**: The owner is often at work and prioritizes velocity. Agents are empowered to:
+> 1. **Execute Simple Tasks**: Documentation updates, typo fixes, non-breaking refactors, and boilerplate generation should be done autonomously.
+> 2. **Proactive Progress**: If a task is clear and follows the PRD/Design System, keep "rocking and moving forward" without waiting for approval.
+> 3. **Safe Auto-Run**: Use `SafeToAutoRun: true` for low-risk, non-destructive terminal commands (ls, cat, grep, npm run build, etc.).
+> 4. **Batch Questions**: If multiple clarifications are needed, batch them into a single `notify_user` call to minimize interruptions.
+
 ---
 
 ## WHAT WE'RE BUILDING

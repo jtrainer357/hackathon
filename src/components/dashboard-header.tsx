@@ -2,8 +2,7 @@
 
 import * as React from "react"
 import { Input } from "@/components/ui/input"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Search01Icon } from "@hugeicons/core-free-icons"
+import { Search } from "lucide-react"
 
 export function DashboardHeader() {
     return (

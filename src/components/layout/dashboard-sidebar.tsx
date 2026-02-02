@@ -4,18 +4,15 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
-    HugeiconsIcon,
-} from "@hugeicons/react"
-import {
-    Home01Icon,
-    UserIcon,
-    Calendar01Icon,
-    Comment01Icon,
-    File01Icon,
-    CreditCardIcon,
-    ChartAverageIcon,
-    Notification01Icon,
-} from "@hugeicons/core-free-icons"
+    Home,
+    User,
+    Calendar,
+    MessageSquare,
+    FileText,
+    CreditCard,
+    BarChart,
+    Bell,
+} from "lucide-react"
 
 import {
     Sidebar,
@@ -32,37 +29,37 @@ const items = [
     {
         title: "Home",
         url: "/dashboard",
-        icon: Home01Icon,
+        icon: Home,
     },
     {
         title: "Patients",
         url: "/dashboard/patients",
-        icon: UserIcon,
+        icon: User,
     },
     {
         title: "Schedule",
         url: "/dashboard/calendar",
-        icon: Calendar01Icon,
+        icon: Calendar,
     },
     {
         title: "Messages",
         url: "/dashboard/messages",
-        icon: Comment01Icon,
+        icon: MessageSquare,
     },
     {
         title: "Clinical",
         url: "/dashboard/clinical",
-        icon: File01Icon,
+        icon: FileText,
     },
     {
         title: "Billing",
         url: "/dashboard/billing",
-        icon: CreditCardIcon,
+        icon: CreditCard,
     },
     {
         title: "Reports",
         url: "/dashboard/reports",
-        icon: ChartAverageIcon,
+        icon: BarChart,
     },
 ]
 
@@ -114,7 +111,7 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
                                     className="justify-center h-10 w-10 mx-auto rounded-xl border border-sidebar-border/80 data-[active=true]:border-transparent data-[active=true]:bg-growth-1-5 data-[active=true]:text-primary-foreground hover:bg-muted hover:text-growth-1-5 data-[active=true]:hover:text-primary-foreground data-[active=true]:shadow-lg transition-all duration-300 ease-in-out data-[active=true]:scale-110"
                                 >
                                     <Link href={item.url}>
-                                        <HugeiconsIcon icon={item.icon} className="!size-5" />
+                                        <item.icon className="!size-5" />
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -128,7 +125,7 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
                 <SidebarMenu className="pointer-events-auto flex flex-col items-center gap-sidebar-gap w-full">
                     <SidebarMenuItem className="w-full flex justify-center">
                         <SidebarMenuButton size="lg" className="justify-center w-10 h-10 mx-auto p-0 rounded-xl border border-sidebar-border/80 hover:bg-muted hover:text-growth-1-5">
-                            <HugeiconsIcon icon={Notification01Icon} className="!size-5 transition-all" />
+                            <Bell className="!size-5 transition-all" />
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem className="w-full flex justify-center">

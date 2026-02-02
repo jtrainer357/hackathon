@@ -5,23 +5,23 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { 
-  Home05Icon,
-  UserMultiple02Icon,
-  Calendar03Icon,
-  Stethoscope02Icon,
-  Settings02Icon
-} from "hugeicons-react"
+  HomeFilter5Icon,
+  UserMultipleFilter2Icon,
+  CalendarFilter3Icon,
+  StethoscopeFilter2Icon,
+  SettingsFilter2Icon
+} from "lucide-react"
 
 interface DashboardLayoutProps {
   children: ReactNode
 }
 
 const navItems = [
-  { href: "/", icon: Home05Icon, label: "Home" },
-  { href: "/patients", icon: UserMultiple02Icon, label: "Patients" },
-  { href: "/sessions", icon: Stethoscope02Icon, label: "Sessions" },
-  { href: "/calendar", icon: Calendar03Icon, label: "Calendar" },
-  { href: "/settings", icon: Settings02Icon, label: "Settings" },
+  { href: "/", icon: HomeFilter5Icon, label: "Home" },
+  { href: "/patients", icon: UserMultipleFilter2Icon, label: "Patients" },
+  { href: "/sessions", icon: StethoscopeFilter2Icon, label: "Sessions" },
+  { href: "/calendar", icon: CalendarFilter3Icon, label: "Calendar" },
+  { href: "/settings", icon: SettingsFilter2Icon, label: "Settings" },
 ]
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
@@ -84,7 +84,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="h-9 w-9 rounded-full bg-growth-4 flex items-center justify-center">
               <span className="text-growth-1 font-bold text-sm">DR</span>
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-Filter">
               <p className="text-sm font-medium text-foreground truncate">Dr. Provider</p>
               <p className="text-xs text-muted-foreground truncate">Mental Health</p>
             </div>
