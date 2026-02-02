@@ -27,7 +27,7 @@ export function NavigationRail() {
         { icon: MessageCircle, label: 'Messages', href: '/communications' },
         { icon: FileText, label: 'Clinical', href: '/clinical' },
         { icon: CreditCard, label: 'Billing', href: '/billing' },
-        { icon: BarChart, label: 'Reports', href: '/reports' },
+        { icon: BarChart, label: 'Marketing & Reputation', href: '/reports' },
     ];
 
     return (

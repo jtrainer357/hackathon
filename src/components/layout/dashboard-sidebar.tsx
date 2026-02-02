@@ -28,17 +28,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 const items = [
     {
         title: "Home",
-        url: "/dashboard",
+        url: "/",
         icon: Home,
     },
     {
         title: "Patients",
-        url: "/dashboard/patients",
+        url: "/patients",
         icon: User,
     },
     {
         title: "Schedule",
-        url: "/dashboard/calendar",
+        url: "/calendar",
         icon: Calendar,
     },
     {
@@ -48,17 +48,17 @@ const items = [
     },
     {
         title: "Clinical",
-        url: "/dashboard/clinical",
+        url: "/clinical",
         icon: FileText,
     },
     {
         title: "Billing",
-        url: "/dashboard/billing",
+        url: "/billing",
         icon: CreditCard,
     },
     {
-        title: "Reports",
-        url: "/dashboard/reports",
+        title: "Marketing & Reputation",
+        url: "/reports",
         icon: BarChart,
     },
 ]
@@ -97,8 +97,8 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
             <SidebarContent className="pt-[calc(var(--spacing-sidebar-gap)*2.5)]">
                 <SidebarMenu className="gap-sidebar-gap">
                     {items.map((item) => {
-                        const isActive = item.url === "/dashboard"
-                            ? pathname === "/dashboard"
+                        const isActive = item.url === "/"
+                            ? pathname === "/"
                             : item.title === "Patients"
                                 ? pathname.startsWith(item.url) || pathname.includes("/voice-canvas")
                                 : pathname.startsWith(item.url)

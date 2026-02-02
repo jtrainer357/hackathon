@@ -60,7 +60,7 @@ const items = [
         icon: CreditCardIcon,
     },
     {
-        title: "Reports",
+        title: "Marketing & Reputation",
         url: "/dashboard/reports",
         icon: ChartAverageIcon,
     },
