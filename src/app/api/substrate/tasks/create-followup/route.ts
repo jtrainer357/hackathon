@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createFollowupTaskSchema } from '@/lib/validation'
+import { checkRateLimit } from '@/lib/rate-limit'
+import { logAudit } from '@/lib/audit'
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || 'unknown'
+    const rateCheck = checkRateLimit(`substrate-create:${ip}`, { maxRequests: 20, windowSeconds: 60 })
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': String(Math.ceil((rateCheck.resetAt - Date.now()) / 1000)) } }
+      )
+    }
+
     const supabase = await createClient()
     const body = await request.json()
 
@@ -56,6 +67,12 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
+
+    await logAudit({
+      action: 'create',
+      resourceType: 'patient',
+      details: { endpoint: 'substrate-tasks-followup', taskCount: insertTasks.length },
+    })
 
     return NextResponse.json({ created: insertTasks.length })
   } catch (error) {

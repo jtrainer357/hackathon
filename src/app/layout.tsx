@@ -81,8 +81,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${akkuratLL.variable} font-sans antialiased`}>
         <VoiceProvider>
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-4 focus:left-4 focus:px-4 focus:py-2 focus:bg-card focus:text-foreground focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-growth-1">
+            Skip to main content
+          </a>
           <NavigationRail />
-          <main className="ml-0 md:ml-[88px] flex min-h-screen flex-col transition-all duration-300 ease-in-out pb-24 md:pb-0">
+          <main id="main-content" className="ml-0 md:ml-[88px] flex min-h-screen flex-col transition-all duration-300 ease-in-out pb-24 md:pb-0">
             <DashboardHeader />
             <div className="flex-1 overflow-auto">
               <PageTransition>

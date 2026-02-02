@@ -97,7 +97,7 @@ export function useVoiceCommands() {
         const transcript = '' // transcript handled by onResult callback
         const parsed = parseRescheduleCommand(transcript)
         if (parsed) {
-          console.log(`Reschedule requested: ${parsed.day} at ${parsed.time}`)
+          // Reschedule requested — action handled by calendar page
         }
         router.push('/calendar')
       },

@@ -3,11 +3,18 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { TwilioSmsProvider } from '@/lib/messaging/channel-providers/twilio-sms'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 const twilioProvider = new TwilioSmsProvider()
 
 export async function POST(request: NextRequest) {
     try {
+        const ip = request.headers.get('x-forwarded-for') || 'unknown'
+        const rateCheck = checkRateLimit(`webhook-twilio-status:${ip}`, { maxRequests: 200, windowSeconds: 60 })
+        if (!rateCheck.allowed) {
+            return new NextResponse('Too many requests', { status: 429 })
+        }
+
         // Parse body (Twilio sends form data)
         const formData = await request.formData()
         const payload: Record<string, string> = {}

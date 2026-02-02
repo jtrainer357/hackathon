@@ -10,11 +10,8 @@ import {
   ChartIncreaseIcon,
   Globe02Icon,
   Message01Icon,
-  Share01Icon,
-  Layout01Icon,
   LockIcon,
   EyeIcon,
-  CheckmarkCircle02Icon,
 } from "hugeicons-react"
 
 import { cn } from "@/lib/utils"
@@ -45,11 +42,6 @@ interface SentimentTopic {
   label: string
   count: number
   percentage: number
-}
-
-interface LockedTool {
-  icon: React.ComponentType<{ size?: number; className?: string }>
-  label: string
 }
 
 // ── Animation Variants ────────────────────────────────────────────────────────
@@ -126,12 +118,6 @@ const USER_PRACTICE: CompetitorRow = {
 const SENTIMENT_TOPICS: SentimentTopic[] = [
   { label: "Scheduling", count: 14, percentage: 12 },
   { label: "Wait Times", count: 9, percentage: 62 },
-]
-
-const LOCKED_TOOLS: LockedTool[] = [
-  { icon: Layout01Icon, label: "AI Blog Writing" },
-  { icon: Share01Icon, label: "Social Posting" },
-  { icon: CheckmarkCircle02Icon, label: "Review Automation" },
 ]
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -494,34 +480,6 @@ export function MarketingCommandCenter(): React.JSX.Element {
             </Button>
           </WidgetContainer>
         </motion.div>
-      </motion.section>
-
-      {/* Bottom: Locked Tool Previews */}
-      <motion.section
-        aria-label="Additional tools"
-        className="grid grid-cols-1 md:grid-cols-3 gap-dashboard-gap opacity-60"
-        initial="hidden"
-        animate="visible"
-        variants={staggerContainer}
-      >
-        {LOCKED_TOOLS.map((tool) => (
-          <motion.div key={tool.label} variants={fadeInUp}>
-            <WidgetContainer
-              title={tool.label}
-              headerIcon={<tool.icon size={18} className="text-muted-foreground" />}
-              cardClassName="border-2 border-dashed border-border bg-card/65"
-              hideHeader
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <tool.icon size={18} className="text-muted-foreground" />
-                  <h3 className="font-bold text-muted-foreground text-sm">{tool.label}</h3>
-                </div>
-                <LockIcon size={14} className="text-muted-foreground/50" />
-              </div>
-            </WidgetContainer>
-          </motion.div>
-        ))}
       </motion.section>
 
     </main>

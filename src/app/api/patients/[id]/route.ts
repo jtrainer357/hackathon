@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { patientIdSchema } from '@/lib/validation';
 import { logAudit } from '@/lib/audit';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 /**
  * GET /api/patients/[id]
@@ -12,6 +13,15 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || 'unknown';
+    const rateCheck = checkRateLimit(`patient-detail:${ip}`, { maxRequests: 60, windowSeconds: 60 });
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': String(Math.ceil((rateCheck.resetAt - Date.now()) / 1000)) } }
+      );
+    }
+
     const { id } = await params;
 
     // Validate ID format
@@ -68,34 +78,38 @@ export async function GET(
       practiceId: patient.practice_id,
     });
 
-    // Fetch related data scoped to same practice via patient_id
-    const { data: sessionNotes } = await supabase
-      .from('session_notes')
-      .select(`
-        id, note_date, session_type, subjective, objective,
-        assessment, plan, therapist_name, session_duration_minutes,
-        cpt_code, diagnosis_codes, status, is_ai_generated, created_at
-      `)
-      .eq('patient_id', id)
-      .order('note_date', { ascending: false });
-
-    const { data: appointments } = await supabase
-      .from('appointments')
-      .select(`
-        id, appointment_date, appointment_time, type, status,
-        duration_minutes, location, notes, created_at
-      `)
-      .eq('patient_id', id)
-      .order('appointment_date', { ascending: false })
-      .order('appointment_time', { ascending: false });
-
-    const { data: outcomeMeasures } = await supabase
-      .from('outcome_measures')
-      .select(`
-        id, measure_type, score, measurement_date, notes, created_at
-      `)
-      .eq('patient_id', id)
-      .order('measurement_date', { ascending: false });
+    // Fetch related data in parallel for performance
+    const [
+      { data: sessionNotes },
+      { data: appointments },
+      { data: outcomeMeasures },
+    ] = await Promise.all([
+      supabase
+        .from('session_notes')
+        .select(`
+          id, note_date, session_type, subjective, objective,
+          assessment, plan, therapist_name, session_duration_minutes,
+          cpt_code, diagnosis_codes, status, is_ai_generated, created_at
+        `)
+        .eq('patient_id', id)
+        .order('note_date', { ascending: false }),
+      supabase
+        .from('appointments')
+        .select(`
+          id, appointment_date, appointment_time, type, status,
+          duration_minutes, location, notes, created_at
+        `)
+        .eq('patient_id', id)
+        .order('appointment_date', { ascending: false })
+        .order('appointment_time', { ascending: false }),
+      supabase
+        .from('outcome_measures')
+        .select(`
+          id, measure_type, score, measurement_date, notes, created_at
+        `)
+        .eq('patient_id', id)
+        .order('measurement_date', { ascending: false }),
+    ]);
 
     // Calculate age
     const age = patient.date_of_birth

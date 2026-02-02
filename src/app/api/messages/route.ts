@@ -7,9 +7,19 @@ import { getMessagingService } from '@/lib/messaging/messaging-service'
 import { messageQuerySchema, composeMessageSchema } from '@/lib/validation'
 import { ConversationFilter, MessageChannel } from '@/types/messaging'
 import { logAudit } from '@/lib/audit'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 export async function GET(request: NextRequest) {
     try {
+        const ip = request.headers.get('x-forwarded-for') || 'unknown'
+        const rateCheck = checkRateLimit(`messages-get:${ip}`, { maxRequests: 60, windowSeconds: 60 })
+        if (!rateCheck.allowed) {
+            return NextResponse.json(
+                { error: 'Too many requests' },
+                { status: 429, headers: { 'Retry-After': String(Math.ceil((rateCheck.resetAt - Date.now()) / 1000)) } }
+            )
+        }
+
         const { searchParams } = new URL(request.url)
 
         // Validate input
@@ -41,6 +51,11 @@ export async function GET(request: NextRequest) {
                 patientId: parsed.data.patientId,
                 limit: parsed.data.limit,
             })
+            await logAudit({
+                action: 'view',
+                resourceType: 'message',
+                details: { type: 'conversations', filter: parsed.data.filter },
+            })
             return NextResponse.json(result)
         }
 
@@ -56,6 +71,11 @@ export async function GET(request: NextRequest) {
                 conversationId: parsed.data.conversationId,
                 limit: parsed.data.limit,
                 cursor: parsed.data.cursor,
+            })
+            await logAudit({
+                action: 'view',
+                resourceType: 'message',
+                details: { type: 'messages', conversationId: parsed.data.conversationId },
             })
             return NextResponse.json(result)
         }
@@ -75,6 +95,15 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     try {
+        const ip = request.headers.get('x-forwarded-for') || 'unknown'
+        const rateCheck = checkRateLimit(`messages-post:${ip}`, { maxRequests: 20, windowSeconds: 60 })
+        if (!rateCheck.allowed) {
+            return NextResponse.json(
+                { error: 'Too many requests' },
+                { status: 429, headers: { 'Retry-After': String(Math.ceil((rateCheck.resetAt - Date.now()) / 1000)) } }
+            )
+        }
+
         const body = await request.json()
 
         // Validate input with Zod

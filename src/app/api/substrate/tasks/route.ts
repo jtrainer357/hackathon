@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { taskQuerySchema, taskUpdateSchema } from '@/lib/validation'
+import { checkRateLimit } from '@/lib/rate-limit'
+import { logAudit } from '@/lib/audit'
 
 export async function GET(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || 'unknown'
+    const rateCheck = checkRateLimit(`substrate-tasks:${ip}`, { maxRequests: 60, windowSeconds: 60 })
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': String(Math.ceil((rateCheck.resetAt - Date.now()) / 1000)) } }
+      )
+    }
+
     const supabase = await createClient()
     const { searchParams } = new URL(request.url)
 
@@ -57,6 +68,12 @@ export async function GET(request: NextRequest) {
       }
     })
 
+    await logAudit({
+      action: 'view',
+      resourceType: 'patient',
+      details: { endpoint: 'substrate-tasks', status, taskCount: tasks.length },
+    })
+
     return NextResponse.json({ tasks })
   } catch (error) {
     console.error('Error fetching tasks:', error)
@@ -104,6 +121,13 @@ export async function PATCH(request: NextRequest) {
         { status: 500 }
       )
     }
+
+    await logAudit({
+      action: 'update',
+      resourceType: 'patient',
+      resourceId: id,
+      details: { endpoint: 'substrate-tasks', newStatus: status },
+    })
 
     return NextResponse.json({ success: true })
   } catch (error) {

@@ -78,7 +78,7 @@ export function NavigationRail() {
                 >
                     <Bell className="h-5 w-5" />
                 </Link>
-                <div className="h-10 w-10 rounded-full bg-growth-1-5 flex items-center justify-center text-white text-sm font-medium">
+                <div className="h-10 w-10 rounded-full bg-growth-1-5 flex items-center justify-center text-white text-sm font-medium" role="img" aria-label="User profile: EW">
                     EW
                 </div>
             </div>

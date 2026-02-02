@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { generateColumnMapping } from '@/lib/ai/gemini-import'
 import { importAnalyzeSchema } from '@/lib/validation'
 import { checkRateLimit } from '@/lib/rate-limit'
+import { logAudit } from '@/lib/audit'
 
 // Helper to parse CSV line (simplified)
 function parseCSVLine(line: string): string[] {
@@ -73,6 +74,13 @@ export async function POST(
 
         // Call Gemini for column mapping
         const mappings = await generateColumnMapping(headers, sampleRows)
+
+        await logAudit({
+            action: 'view',
+            resourceType: 'import_batch',
+            resourceId: batchId,
+            details: { headerCount: headers.length, sampleRowCount: sampleRows.length },
+        })
 
         return NextResponse.json({ mappings, headers, sampleRows, batchId })
     } catch (error) {
