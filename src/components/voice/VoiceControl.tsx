@@ -1,11 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Mic, MicOff } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { voiceSystem } from "@/lib/voice"
 import { DesignSystem } from "@/lib/design-system"
+import { VoiceTranscript } from "./voice-transcript"
+import { VoiceFallback } from "./voice-fallback"
 
 interface VoiceControlProps {
   onTranscript?: (transcript: string) => void
@@ -16,6 +18,10 @@ export function VoiceControl({ onTranscript, className }: VoiceControlProps) {
   const [isListening, setIsListening] = useState(false)
   const [transcript, setTranscript] = useState("")
   const [isSupported, setIsSupported] = useState(true)
+  const [showFallback, setShowFallback] = useState(false)
+  const [failureCount, setFailureCount] = useState(0)
+  const [showTranscript, setShowTranscript] = useState(false)
+  const transcriptTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     setIsSupported(voiceSystem.isSupported())
@@ -29,6 +35,11 @@ export function VoiceControl({ onTranscript, className }: VoiceControlProps) {
       const started = voiceSystem.start({
         onResult: (text) => {
           setTranscript(text)
+          setShowTranscript(true)
+          setFailureCount(0)
+          setShowFallback(false)
+          if (transcriptTimeoutRef.current) clearTimeout(transcriptTimeoutRef.current)
+          transcriptTimeoutRef.current = setTimeout(() => setShowTranscript(false), 3000)
           if (onTranscript) {
             onTranscript(text)
           }
@@ -42,6 +53,11 @@ export function VoiceControl({ onTranscript, className }: VoiceControlProps) {
         onError: (error) => {
           console.error('Voice error:', error)
           setIsListening(false)
+          setFailureCount(prev => {
+            const next = prev + 1
+            if (next >= 3) setShowFallback(true)
+            return next
+          })
         },
       })
 
@@ -98,21 +114,11 @@ export function VoiceControl({ onTranscript, className }: VoiceControlProps) {
         </AnimatePresence>
       </motion.div>
 
-      {/* Transcript display */}
-      <AnimatePresence>
-        {transcript && (
-          <motion.div
-            className="mt-4 p-4 bg-growth-5 rounded-lg border border-growth-3"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-          >
-            <p className="text-sm font-medium text-growth-1">
-              Heard: <span className="font-normal text-foreground">{transcript}</span>
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <VoiceTranscript transcript={transcript} isVisible={showTranscript} />
+      <VoiceFallback
+        isVisible={showFallback}
+        onDismiss={() => { setShowFallback(false); setFailureCount(0); }}
+      />
     </div>
   )
 }

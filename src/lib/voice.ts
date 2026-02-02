@@ -37,6 +37,8 @@ export interface VoiceRecognitionOptions {
   onError?: (error: string) => void
   onStart?: () => void
   onEnd?: () => void
+  onLowConfidence?: (transcript: string) => void
+  onFailureThreshold?: () => void
 }
 
 class VoiceCommandSystem {
@@ -44,6 +46,9 @@ class VoiceCommandSystem {
   private isListening: boolean = false
   private commands: VoiceCommand[] = []
   private options: VoiceRecognitionOptions = {}
+  private failureCount: number = 0
+  private onLowConfidence: ((transcript: string) => void) | null = null
+  private onFailureThreshold: (() => void) | null = null
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -70,7 +75,31 @@ class VoiceCommandSystem {
         .toLowerCase()
         .trim()
 
-      // Voice transcript received
+      const confidence = event.results[0][0].confidence
+
+      // Check confidence threshold
+      if (confidence < 0.7) {
+        this.failureCount++
+        console.warn(`Low confidence (${confidence.toFixed(2)}): "${transcript}" — failure count: ${this.failureCount}`)
+        if (this.onLowConfidence) {
+          this.onLowConfidence(transcript)
+        }
+        if (this.options.onLowConfidence) {
+          this.options.onLowConfidence(transcript)
+        }
+        if (this.failureCount >= 3) {
+          if (this.onFailureThreshold) {
+            this.onFailureThreshold()
+          }
+          if (this.options.onFailureThreshold) {
+            this.options.onFailureThreshold()
+          }
+        }
+        return
+      }
+
+      // High confidence — reset failure count
+      this.failureCount = 0
 
       // Call the result callback
       if (this.options.onResult) {
@@ -88,9 +117,22 @@ class VoiceCommandSystem {
     }
 
     this.recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-      console.error('🎤 Error:', event.error)
+      const errorType = event.error
+      switch (errorType) {
+        case 'no-speech':
+          console.warn('Voice recognition: No speech detected')
+          break
+        case 'audio-capture':
+          console.error('Voice recognition: No microphone available')
+          break
+        case 'not-allowed':
+          console.error('Voice recognition: Microphone permission denied')
+          break
+        default:
+          console.error('Voice recognition error:', errorType)
+      }
       if (this.options.onError) {
-        this.options.onError(event.error)
+        this.options.onError(errorType)
       }
     }
 
@@ -148,6 +190,8 @@ class VoiceCommandSystem {
     }
 
     this.options = { ...options }
+    this.onLowConfidence = options?.onLowConfidence ?? null
+    this.onFailureThreshold = options?.onFailureThreshold ?? null
 
     try {
       this.recognition.start()
