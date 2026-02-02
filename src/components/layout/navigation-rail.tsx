@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
 import {
     Home,
     Users,
@@ -43,20 +44,21 @@ export function NavigationRail() {
                 {topItems.map((item) => {
                     const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
                     return (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={cn(
-                                "relative flex items-center justify-center h-10 w-10 rounded-full transition-all duration-300 ease-in-out group",
-                                isActive
-                                    ? "bg-growth-1-5 text-white shadow-lg scale-110"
-                                    : "border border-border text-muted-foreground hover:bg-white hover:text-growth-1-5"
-                            )}
-                            aria-label={item.label}
-                            title={item.label}
-                        >
-                            <item.icon className="h-5 w-5" />
-                        </Link>
+                        <motion.div key={item.href} whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+                            <Link
+                                href={item.href}
+                                className={cn(
+                                    "relative flex items-center justify-center h-10 w-10 rounded-full transition-all duration-300 ease-in-out group",
+                                    isActive
+                                        ? "bg-growth-1-5 text-white shadow-lg scale-110"
+                                        : "border border-border text-muted-foreground hover:bg-white hover:text-growth-1-5"
+                                )}
+                                aria-label={item.label}
+                                title={item.label}
+                            >
+                                <item.icon className="h-5 w-5" />
+                            </Link>
+                        </motion.div>
                     );
                 })}
             </nav>

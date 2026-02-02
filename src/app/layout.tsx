@@ -6,6 +6,7 @@ import { BottomNavigation } from '@/components/layout/bottom-navigation';
 import { DashboardHeader } from '@/components/layout/dashboard-header';
 import { VoiceProvider } from '@/components/voice/VoiceProvider';
 import { Toaster } from '@/components/ui/sonner';
+import { PageTransition } from '@/components/ui/page-transition';
 
 const akkuratLL = localFont({
   src: [
@@ -84,7 +85,9 @@ export default function RootLayout({
           <main className="ml-0 md:ml-[88px] flex min-h-screen flex-col transition-all duration-300 ease-in-out pb-24 md:pb-0">
             <DashboardHeader />
             <div className="flex-1 overflow-auto">
-              {children}
+              <PageTransition>
+                {children}
+              </PageTransition>
             </div>
           </main>
           <BottomNavigation />

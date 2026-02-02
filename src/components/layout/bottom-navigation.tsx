@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import {
     Home,
@@ -25,17 +26,25 @@ export function BottomNavigation() {
             {navItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
-                    <Link
-                        key={item.href}
-                        href={item.href}
-                        className={cn(
-                            "flex flex-col items-center gap-1.5 transition-colors",
-                            isActive ? "text-growth-1" : "text-muted-foreground"
-                        )}
-                    >
-                        <item.icon className={cn("h-6 w-6", isActive && "fill-current")} />
-                        <span className="text-[11px] font-bold uppercase tracking-wider">{item.label}</span>
-                    </Link>
+                    <motion.div key={item.href} whileTap={{ scale: 0.9 }} className="relative">
+                        <Link
+                            href={item.href}
+                            className={cn(
+                                "relative flex flex-col items-center gap-1.5 transition-colors",
+                                isActive ? "text-growth-1" : "text-muted-foreground"
+                            )}
+                        >
+                            {isActive && (
+                                <motion.div
+                                    layoutId="bottomNavIndicator"
+                                    className="h-1 w-1 rounded-full bg-growth-1 absolute -top-1"
+                                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                                />
+                            )}
+                            <item.icon className={cn("h-6 w-6", isActive && "fill-current")} />
+                            <span className="text-[11px] font-bold uppercase tracking-wider">{item.label}</span>
+                        </Link>
+                    </motion.div>
                 );
             })}
         </nav>
