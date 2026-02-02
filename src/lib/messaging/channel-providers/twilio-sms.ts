@@ -150,11 +150,23 @@ export class TwilioSmsProvider implements ChannelProvider {
 
     verifyWebhookSignature(payload: string, signature: string): boolean {
         if (!this.authToken) {
-            console.warn('[Twilio SMS] No auth token - skipping signature verification');
-            return true; // Skip in development
+            console.warn('[Twilio SMS] No auth token — rejecting in production');
+            return process.env.NODE_ENV !== 'production';
         }
 
-        // TODO: Implement actual Twilio signature verification using crypto HMAC
-        return true;
+        // Twilio signature verification using HMAC-SHA1
+        // https://www.twilio.com/docs/usage/security#validating-requests
+        const crypto = require('crypto') as typeof import('crypto');
+        const webhookUrl = process.env.TWILIO_WEBHOOK_URL || process.env.NEXT_PUBLIC_APP_URL || '';
+        const fullUrl = `${webhookUrl}/api/webhooks/twilio/sms`;
+
+        // Sort POST params and append to URL
+        const data = fullUrl + payload;
+        const expectedSignature = crypto
+            .createHmac('sha1', this.authToken)
+            .update(Buffer.from(data, 'utf-8'))
+            .digest('base64');
+
+        return expectedSignature === signature;
     }
 }

@@ -97,6 +97,8 @@ export function ComposeMessage({
                         <button
                             key={ch}
                             onClick={() => handleChannelChange(ch)}
+                            aria-label={`Send via ${CHANNEL_CONFIG[ch].name}`}
+                            aria-pressed={channel === ch}
                             className={cn(
                                 'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors min-h-[32px]',
                                 channel === ch
@@ -121,6 +123,7 @@ export function ComposeMessage({
             {channel === 'email' && (
                 <Input
                     placeholder="Subject"
+                    aria-label="Email subject"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
                     className="h-10"
@@ -130,6 +133,7 @@ export function ComposeMessage({
             {/* Message input */}
             <div className="relative">
                 <Textarea
+                    aria-label="Message content"
                     placeholder={`Message ${patient?.firstName || 'patient'}...`}
                     value={content}
                     onChange={(e) => setContent(e.target.value)}

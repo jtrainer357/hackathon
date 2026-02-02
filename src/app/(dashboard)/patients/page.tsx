@@ -130,21 +130,21 @@ export default function PatientsPage() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground">Riverside Family Health</h1>
           <div className="flex items-center gap-4">
-            <nav className="flex gap-6">
-              <button className="text-sm font-medium text-foreground border-b-2 border-growth-2 pb-1">
+            <nav aria-label="Patient filters" className="flex gap-6">
+              <button aria-label="Show all patients" aria-current="page" className="text-sm font-medium text-foreground border-b-2 border-growth-2 pb-1">
                 All Patients
               </button>
-              <button className="text-sm text-muted-foreground hover:text-foreground">
+              <button aria-label="Show active patients" className="text-sm text-muted-foreground hover:text-foreground">
                 Active
               </button>
-              <button className="text-sm text-muted-foreground hover:text-foreground">
+              <button aria-label="Show new patients" className="text-sm text-muted-foreground hover:text-foreground">
                 New
               </button>
-              <button className="text-sm text-muted-foreground hover:text-foreground">
+              <button aria-label="Show inactive patients" className="text-sm text-muted-foreground hover:text-foreground">
                 Inactive
               </button>
             </nav>
-            <button className="px-4 py-2 bg-growth-2 text-white rounded-full text-sm font-medium hover:bg-growth-1">
+            <button aria-label="Add new patient" className="px-4 py-2 bg-growth-2 text-white rounded-full text-sm font-medium hover:bg-growth-1">
               Add Patient
             </button>
           </div>
@@ -179,6 +179,8 @@ export default function PatientsPage() {
                 <button
                   key={patient.id}
                   onClick={() => handlePatientSelect(patient)}
+                  aria-label={`View patient ${patient.first_name} ${patient.last_name}`}
+                  aria-selected={isSelected}
                   className={`w-full p-4 border-b border-border text-left hover:bg-muted/50 transition-colors ${
                     isSelected ? 'bg-muted' : ''
                   }`}
@@ -194,9 +196,9 @@ export default function PatientsPage() {
                     {/* Patient Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-foreground text-sm">
+                        <h2 className="font-semibold text-foreground text-sm">
                           {patient.first_name || 'Unknown'} {patient.last_name || 'Patient'}
-                        </h3>
+                        </h2>
                         {patient.is_active && (
                           <Badge className="bg-success/15 text-success text-xs px-2 py-0">
                             ACTIVE
@@ -349,7 +351,7 @@ export default function PatientsPage() {
                   <div className="bg-card/65 rounded-2xl shadow-widget p-6">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-semibold text-foreground">Upcoming Appointments</h3>
-                      <button className="text-sm text-growth-2 hover:text-growth-1">
+                      <button aria-label="See all upcoming appointments" className="text-sm text-growth-2 hover:text-growth-1">
                         See All
                       </button>
                     </div>
@@ -382,7 +384,7 @@ export default function PatientsPage() {
                   <div className="bg-card/65 rounded-2xl shadow-widget p-6">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-semibold text-foreground">Recent Activity</h3>
-                      <button className="text-sm text-growth-2 hover:text-growth-1">
+                      <button aria-label="See all recent activity" className="text-sm text-growth-2 hover:text-growth-1">
                         See All
                       </button>
                     </div>

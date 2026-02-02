@@ -138,9 +138,18 @@ export class SendGridEmailProvider implements ChannelProvider {
     }
 
     verifyWebhookSignature(payload: string, signature: string): boolean {
-        // SendGrid uses basic auth for webhook verification
-        // In production, verify the basic auth credentials
-        // TODO: Implement actual SendGrid webhook verification
-        return true; // TODO: Implement actual verification
+        // SendGrid Inbound Parse uses basic auth verification.
+        // Validate the provided credentials against expected values.
+        const expectedUser = process.env.SENDGRID_WEBHOOK_USER || '';
+        const expectedPass = process.env.SENDGRID_WEBHOOK_PASS || '';
+
+        if (!expectedUser || !expectedPass) {
+            console.warn('[SendGrid Email] Webhook credentials not configured — rejecting in production');
+            return process.env.NODE_ENV !== 'production';
+        }
+
+        // Basic auth signature format: "Basic base64(user:pass)"
+        const expected = Buffer.from(`${expectedUser}:${expectedPass}`).toString('base64');
+        return signature === `Basic ${expected}`;
     }
 }

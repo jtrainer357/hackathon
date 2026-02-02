@@ -1,4 +1,4 @@
-# TEBRA MENTAL HEALTH MVP: CLAUDE PROJECT INSTRUCTIONS v2.0
+# TEBRA MENTAL HEALTH MVP: CLAUDE PROJECT INSTRUCTIONS v2.1
 
 > **🚨 CRITICAL CONTEXT ISOLATION RULE**
 > This project is COMPLETELY SELF-CONTAINED. NEVER reference, recall, or pull information from any other Claude projects, conversations, or memory systems. All context needed is provided in these instructions and the documents within this project. If information seems relevant but isn't explicitly provided here, ASK—do not assume.
@@ -8,8 +8,10 @@
 ## PROJECT IDENTITY
 
 **Project Name:** Tebra Mental Health MVP (MHMVP)  
-**Version:** 2.0  
-**Date:** February 1, 2026  
+**Version:** 2.1  
+**Date:** February 2, 2026  
+**Last Updated:** February 2, 2026 - Day 2 Integration Testing Complete  
+**Current Sprint:** Day 3 - Strategic Feature Assessment (see PROGRESS_TRACKER.md)  
 **Purpose:** Hackathon POC demonstrating UX transformation + AI engineering excellence  
 **Code Quality Bar:** Production-ready, enterprise-grade code for review by experienced engineering leadership  
 **Repository:** github.com/jtrainer357/hackathon  
@@ -17,6 +19,56 @@
 **Owner:** Jay Trainer (UX Strategy & Prototype Lead)  
 **Stakeholders:** Kyle Ryan (CTO/CPO), Catarina Tsang (UX Lead/AI Framework), Rich U (Data Infrastructure)  
 **Hackathon Demo:** February 2026
+
+---
+
+## DEVELOPMENT LOG
+
+This project maintains a detailed progress tracker at `PROGRESS_TRACKER.md`. For daily updates, completed features, bug fixes, and strategic decisions, refer to that document.
+
+**Current Status:** Day 2 Complete - Integration Testing & Bug Fixes  
+**Next Phase:** Day 3 - Strategic Feature Assessment  
+**Hackathon Date:** February 6-7, 2026 (3.5 days remaining)
+
+### Recent Milestones
+- ✅ **Day 1:** Core MVP features implemented (Voice, Patient 360, Dashboard, Calendar, AI Import, SOAP Generation)
+- ✅ **Day 2:** Comprehensive integration testing, critical bug fixes, backup asset system, documentation enhancement
+
+### Key Architectural Additions (Post-v2.0)
+
+#### Backup Asset System
+To ensure graceful degradation when imported assets fail to load, a backup asset system has been implemented:
+```
+/public/assets/backup/
+├── patients/          # Patient avatar fallbacks (avatar-1.jpg through avatar-10.jpg)
+├── providers/         # Provider photo fallbacks (provider-1.jpg through provider-5.jpg)
+└── illustrations/     # UI graphic fallbacks (empty-state-*.svg, error-*.svg)
+```
+
+**Usage Pattern:**
+```typescript
+// Component-level fallback
+<img 
+  src={patientAvatar || '/assets/backup/patients/avatar-1.jpg'} 
+  onError={(e) => e.currentTarget.src = '/assets/backup/patients/avatar-1.jpg'}
+/>
+
+// Utility function
+import { getBackupAsset } from '@/lib/utils/backup-assets'
+const safeAvatar = patientAvatar || getBackupAsset('patient', patientId)
+```
+
+### Known Issues & Resolutions
+
+#### Fixed (Day 2)
+- ✅ Voice command wake word detection unreliable → Fixed via Chrome-specific API handling
+- ✅ Mobile bottom navigation overlapping content → Fixed z-index and responsive padding
+- ✅ Dashboard widgets showing undefined data → Fixed data fetching and null state handling
+- ✅ Import wizard missing visual assets → Created backup asset system with fallbacks
+- ✅ Patient 360 tab navigation not responsive → Fixed mobile layout and touch targets
+
+#### Under Investigation
+- ⚠️ None currently identified (pending Day 3 feature expansion)
 
 ---
 
@@ -388,7 +440,7 @@ Every page/component MUST be tested at these widths:
 - [ ] Invoice view/print options
 - [ ] Clear "What Goes to Patient Portal?" section (SHARED vs. PRIVATE badges)
 
-#### Communications Page (Unified Messaging)
+#### 🆕 Communications Page (Unified Messaging)
 - [ ] **Unified inbox** (SMS, email, voice messages)
   - Tab filter: All | SMS | Email | Voice
   - Search by patient name or message content
@@ -396,18 +448,17 @@ Every page/component MUST be tested at these widths:
   
 - [ ] **Message thread list**
   - Patient avatar (40px desktop, 32px mobile)
-  - Patient name, message type badge (SMS icon, Email icon, Phone icon)
+  - Patient name, message type indicator
   - Preview text (first 60 chars)
   - Timestamp (relative or date)
   - Unread badge (red dot)
   
-- [ ] **Thread expanded view** (split-screen on desktop, full-screen on mobile)
-  - Patient header with avatar, name, contact info
+- [ ] **Thread expanded view**
   - Messages chronological (oldest first)
   - Per message: timestamp, type badge, content, sender indicator
   - Reply interface at bottom (text input + send button)
   
-- [ ] **Mobile responsive**
+- [ ] **🆕 Mobile responsive**
   - Full-screen thread view on mobile
   - Swipe back to inbox
   - Bottom-anchored reply input
@@ -934,10 +985,18 @@ import { ScheduleWidget } from '@/components/widgets/schedule-widget'
 │   │   ├── /supabase           # Database client
 │   │   ├── /ai                 # Deepgram, Gemini integrations
 │   │   ├── /messaging          # 🆕 Channel providers
-│   │   └── /import             # 🆕 Import pipeline
+│   │   ├── /import             # 🆕 Import pipeline
+│   │   └── /utils              # 🆕 Backup assets helper
 │   └── /styles
 │       └── globals.css         # Design tokens
+├── /public
+│   └── /assets
+│       └── /backup             # 🆕 Fallback images
+│           ├── /patients       # Patient avatar fallbacks
+│           ├── /providers      # Provider photo fallbacks
+│           └── /illustrations  # UI graphic fallbacks
 ├── CLAUDE.md                   # Claude Code instructions
+├── PROGRESS_TRACKER.md         # 🆕 Daily progress log
 ├── README.md
 └── package.json
 ```
@@ -1053,6 +1112,11 @@ Before implementing ANY feature, verify:
 - [ ] Comprehensive audit logging?
 - [ ] Transaction-based commit with rollback?
 
+### 🆕 Asset Handling:
+- [ ] Uses backup asset system for fallbacks?
+- [ ] Implements onError handlers for images?
+- [ ] Tests graceful degradation with missing assets?
+
 ---
 
 ## CONTEXT ISOLATION ENFORCEMENT
@@ -1092,6 +1156,6 @@ When answering or implementing:
 
 ---
 
-*These instructions are the single source of truth for MHMVP v2.0. All development decisions align with specifications above.*
+*These instructions are the single source of truth for MHMVP v2.1. All development decisions align with specifications above.*
 
-*Last Updated: February 1, 2026*
+*Last Updated: February 2, 2026*

@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { FileText, Lock, Check } from "lucide-react"
+import { generateFollowUpTasks } from "@/lib/substrate/task-generator"
 
 const DEMO_SOAP_NOTES: Record<string, { subjective: string; objective: string; assessment: string; plan: string }> = {
   "Tim Anders": {
@@ -78,8 +79,26 @@ export function SOAPNoteGenerator({ isGenerating, patientName, sessionDate, onSi
     }
   }, [phase, sections.length])
 
+  const [followUpCount, setFollowUpCount] = useState(0)
+
   const handleSignAndLock = () => {
     setIsLocked(true)
+
+    // Generate follow-up tasks from SOAP content
+    const tasks = generateFollowUpTasks(patientName, soapData)
+    setFollowUpCount(tasks.length)
+
+    // Persist tasks (fire-and-forget)
+    if (tasks.length > 0) {
+      fetch('/api/substrate/tasks/create-followup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tasks }),
+      }).catch(() => {
+        // Silently fail - tasks still shown in toast
+      })
+    }
+
     onSignAndLock?.()
   }
 
@@ -179,9 +198,22 @@ export function SOAPNoteGenerator({ isGenerating, patientName, sessionDate, onSi
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center py-3 text-sm text-muted-foreground"
+              className="space-y-2 py-3"
             >
-              Note signed and locked at {new Date().toLocaleTimeString()}
+              <p className="text-center text-sm text-muted-foreground">
+                Note signed and locked at {new Date().toLocaleTimeString()}
+              </p>
+              {followUpCount > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="flex items-center justify-center gap-2 text-sm font-medium text-growth-2"
+                >
+                  <Check className="h-4 w-4" />
+                  {followUpCount} follow-up task{followUpCount > 1 ? 's' : ''} created
+                </motion.div>
+              )}
             </motion.div>
           )}
         </div>

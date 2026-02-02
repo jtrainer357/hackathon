@@ -29,6 +29,8 @@ export function BottomNavigation() {
                     <motion.div key={item.href} whileTap={{ scale: 0.9 }} className="relative">
                         <Link
                             href={item.href}
+                            aria-label={item.label}
+                            aria-current={isActive ? 'page' : undefined}
                             className={cn(
                                 "relative flex flex-col items-center gap-1.5 transition-colors",
                                 isActive ? "text-growth-1" : "text-muted-foreground"

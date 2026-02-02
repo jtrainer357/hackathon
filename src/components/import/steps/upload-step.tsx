@@ -149,6 +149,7 @@ export function UploadStep({ sourceSystem, onComplete }: UploadStepProps) {
                 <input
                     type="file"
                     ref={fileInputRef}
+                    aria-label="Select files to import"
                     className="hidden"
                     multiple
                     onChange={handleFileSelect}

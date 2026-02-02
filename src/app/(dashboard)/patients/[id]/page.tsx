@@ -10,6 +10,8 @@ import { Mail, Phone, Calendar, TrendingUp, TrendingDown, Minus } from "lucide-r
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 import { motion } from "framer-motion"
 import { DesignSystem } from "@/lib/design-system"
+import { generateInsights } from "@/lib/substrate/clinical-insights"
+import { InsightsCard } from "@/components/clinical/insights-card"
 interface PatientAppointment {
   id?: string
   appointment_date: string
@@ -309,6 +311,19 @@ export default function PatientPage() {
           </div>
         </div>
       </WidgetContainer>
+
+      {/* Substrate Insights */}
+      {patient && (
+        <InsightsCard
+          insights={generateInsights({
+            first_name: patient.first_name,
+            last_name: patient.last_name,
+            outcomeMeasures: patient.outcomeMeasures,
+            appointments: patient.appointments,
+            treatment_plan: patient.treatment_plan,
+          })}
+        />
+      )}
 
       {/* Tabbed Interface */}
       <Tabs defaultValue="notes" className="w-full">

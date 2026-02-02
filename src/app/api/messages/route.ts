@@ -4,51 +4,59 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getMessagingService } from '@/lib/messaging/messaging-service'
-import { ComposeMessageInput, ConversationFilter, MessageChannel } from '@/types/messaging'
+import { messageQuerySchema, composeMessageSchema } from '@/lib/validation'
+import { ConversationFilter, MessageChannel } from '@/types/messaging'
+import { logAudit } from '@/lib/audit'
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url)
-        const type = searchParams.get('type') || 'conversations'
+
+        // Validate input
+        const parsed = messageQuerySchema.safeParse({
+            type: searchParams.get('type') || 'conversations',
+            filter: searchParams.get('filter') || 'all',
+            channel: searchParams.get('channel') || undefined,
+            q: searchParams.get('q') || '',
+            patientId: searchParams.get('patientId') || undefined,
+            conversationId: searchParams.get('conversationId') || undefined,
+            limit: searchParams.get('limit') || '50',
+            cursor: searchParams.get('cursor') || undefined,
+        })
+
+        if (!parsed.success) {
+            return NextResponse.json(
+                { error: 'Invalid parameters', details: parsed.error.flatten() },
+                { status: 400 }
+            )
+        }
 
         const service = getMessagingService()
 
-        if (type === 'conversations') {
-            const filter = (searchParams.get('filter') || 'all') as ConversationFilter
-            const channelCode = searchParams.get('channel') as MessageChannel | undefined
-            const searchQuery = searchParams.get('q') || ''
-            const patientId = searchParams.get('patientId') || undefined
-            const limit = parseInt(searchParams.get('limit') || '50')
-
+        if (parsed.data.type === 'conversations') {
             const result = await service.getConversations({
-                filter,
-                channelCode,
-                searchQuery,
-                patientId,
-                limit,
+                filter: parsed.data.filter as ConversationFilter,
+                channelCode: parsed.data.channel as MessageChannel | undefined,
+                searchQuery: parsed.data.q,
+                patientId: parsed.data.patientId,
+                limit: parsed.data.limit,
             })
-
             return NextResponse.json(result)
         }
 
-        if (type === 'messages') {
-            const conversationId = searchParams.get('conversationId')
-            if (!conversationId) {
+        if (parsed.data.type === 'messages') {
+            if (!parsed.data.conversationId) {
                 return NextResponse.json(
-                    { error: 'conversationId is required' },
+                    { error: 'conversationId is required for type=messages' },
                     { status: 400 }
                 )
             }
 
-            const limit = parseInt(searchParams.get('limit') || '50')
-            const cursor = searchParams.get('cursor') || undefined
-
             const result = await service.getMessages({
-                conversationId,
-                limit,
-                cursor,
+                conversationId: parsed.data.conversationId,
+                limit: parsed.data.limit,
+                cursor: parsed.data.cursor,
             })
-
             return NextResponse.json(result)
         }
 
@@ -67,18 +75,19 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     try {
-        const body = await request.json() as ComposeMessageInput
+        const body = await request.json()
 
-        // Validate required fields
-        if (!body.patientId || !body.channelCode || !body.content) {
+        // Validate input with Zod
+        const parsed = composeMessageSchema.safeParse(body)
+        if (!parsed.success) {
             return NextResponse.json(
-                { error: 'patientId, channelCode, and content are required' },
+                { error: 'Invalid parameters', details: parsed.error.flatten() },
                 { status: 400 }
             )
         }
 
         const service = getMessagingService()
-        const result = await service.sendMessage(body)
+        const result = await service.sendMessage(parsed.data)
 
         if (!result.success) {
             return NextResponse.json(
@@ -86,6 +95,13 @@ export async function POST(request: NextRequest) {
                 { status: 400 }
             )
         }
+
+        // Audit log message send
+        await logAudit({
+            action: 'create',
+            resourceType: 'message',
+            details: { channel: parsed.data.channelCode, patientId: parsed.data.patientId },
+        })
 
         return NextResponse.json(result)
     } catch (error) {

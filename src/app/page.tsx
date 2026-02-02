@@ -11,6 +11,7 @@ import {
   Sparkles,
   Calendar
 } from "lucide-react"
+import { TasksWidget } from "@/components/widgets/tasks-widget"
 
 export default function DashboardPage() {
   const fadeInUp = {
@@ -43,6 +44,7 @@ export default function DashboardPage() {
     >
       {/* Header - Stacks on mobile */}
       <motion.div className="col-span-1 md:col-span-12" variants={fadeInUp}>
+        <h1 className="sr-only">Dashboard</h1>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end mb-4 md:mb-6">
           <Button className="w-full sm:w-auto h-12 min-h-[48px] rounded-full px-6 font-bold">
             <Stethoscope className="h-5 w-5 mr-2" />
@@ -95,34 +97,9 @@ export default function DashboardPage() {
         </WidgetContainer>
       </motion.div>
 
-      {/* AI Insights Widget */}
+      {/* Tasks Widget - Substrate Intelligence */}
       <motion.div className="col-span-1 md:col-span-4" variants={fadeInUp}>
-        <WidgetContainer
-          title="AI Insights"
-          headerIcon={<Sparkles className="h-5 w-5 text-growth-2" />}
-          variant="highlight"
-        >
-          <div className="space-y-4">
-            <div className="text-center py-4 sm:py-6">
-              <div className="inline-flex items-center justify-center h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-growth-2/20 mb-4">
-                <Sparkles className="h-7 w-7 sm:h-8 sm:w-8 text-growth-1" />
-              </div>
-              <p className="text-sm text-muted-foreground px-2">
-                AI documentation assistance is ready. Start a session to auto-generate SOAP notes.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 sm:p-4 rounded-lg bg-card/50 text-center">
-                <p className="text-xl sm:text-2xl font-bold text-growth-1">0</p>
-                <p className="text-xs text-muted-foreground">Notes Today</p>
-              </div>
-              <div className="p-3 sm:p-4 rounded-lg bg-card/50 text-center">
-                <p className="text-xl sm:text-2xl font-bold text-growth-1">~3m</p>
-                <p className="text-xs text-muted-foreground">Avg. Time Saved</p>
-              </div>
-            </div>
-          </div>
-        </WidgetContainer>
+        <TasksWidget />
       </motion.div>
 
       {/* Quick Stats Row - 2 cols on mobile, 4 on tablet+ */}
