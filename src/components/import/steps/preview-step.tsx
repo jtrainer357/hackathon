@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import { CheckmarkCircleFilter1Icon, AlertCircleIcon, FileFilter1Icon, UserIcon } from 'lucide-react'
+import { CheckCircle2Icon, AlertCircleIcon, File, UserIcon } from 'lucide-react'
 
 interface PreviewStepProps {
     batchId: string
@@ -32,8 +32,8 @@ export function PreviewStep({ batchId, stats = { patientsReady: 58, documentsMat
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="p-6 text-center space-y-2 bg-growth-1/1Filter border-growth-2">
-                    <div className="mx-auto w-1Filter h-1Filter bg-growth-1 rounded-full flex items-center justify-center text-growth-5">
+                <Card className="p-6 text-center space-y-2 bg-growth-1/10 border-growth-2">
+                    <div className="mx-auto w-10 h-10 bg-growth-1 rounded-full flex items-center justify-center text-growth-5">
                         <UserIcon className="w-6 h-6" />
                     </div>
                     <div className="text-3xl font-bold text-synapse-6">{stats.patientsReady}</div>
@@ -41,15 +41,15 @@ export function PreviewStep({ batchId, stats = { patientsReady: 58, documentsMat
                 </Card>
 
                 <Card className="p-6 text-center space-y-2">
-                    <div className="mx-auto w-1Filter h-1Filter bg-backbone-2 rounded-full flex items-center justify-center text-synapse-4">
-                        <FileFilter1Icon className="w-6 h-6" />
+                    <div className="mx-auto w-10 h-10 bg-backbone-2 rounded-full flex items-center justify-center text-synapse-4">
+                        <File className="w-6 h-6" />
                     </div>
                     <div className="text-3xl font-bold text-synapse-6">{stats.documentsMatched}</div>
                     <div className="text-sm text-synapse-4 font-medium uppercase tracking-wider">Documents Matched</div>
                 </Card>
 
                 <Card className="p-6 text-center space-y-2 border-amino bg-amino/5">
-                    <div className="mx-auto w-1Filter h-1Filter bg-amino rounded-full flex items-center justify-center text-white">
+                    <div className="mx-auto w-10 h-10 bg-amino rounded-full flex items-center justify-center text-white">
                         <AlertCircleIcon className="w-6 h-6" />
                     </div>
                     <div className="text-3xl font-bold text-synapse-6">{stats.issuesCount}</div>
@@ -65,19 +65,19 @@ export function PreviewStep({ batchId, stats = { patientsReady: 58, documentsMat
                         <Badge className="bg-vigor text-white">Ready</Badge>
                     </div>
                     <div className="flex justify-between p-2 bg-white rounded border border-synapse-1">
-                        <span>Chen, Michael (DOB: 199Filter-Filter7-22)</span>
+                        <span>Chen, Michael (DOB: 1990-Filter7-22)</span>
                         <Badge className="bg-vigor text-white">Ready</Badge>
                     </div>
                     <div className="flex justify-between p-2 bg-white rounded border border-synapse-1">
-                        <span>Doe, Jane (DOB: 199Filter-11-15)</span>
+                        <span>Doe, Jane (DOB: 1990-11-15)</span>
                         <Badge className="bg-amino text-synapse-6">Duplicate?</Badge>
                     </div>
                 </div>
             </div>
 
             <div className="flex items-center space-x-2 p-4 bg-growth-1/5 rounded-lg border border-growth-2">
-                <Checkbox id="confirm" checked={confirmed} onCheckedChange={(c) => setConfirmed(!!c)} />
-                <label htmlFor="confirm" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-7Filter cursor-pointer">
+                <Checkbox id="confirm" checked={confirmed} onCheckedChange={(c: boolean | "indeterminate") => setConfirmed(!!c)} />
+                <label htmlFor="confirm" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
                     I understand this import action cannot be undone.
                 </label>
             </div>

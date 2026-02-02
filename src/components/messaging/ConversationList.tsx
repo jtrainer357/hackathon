@@ -17,13 +17,13 @@ import { ChannelBadge } from './ChannelIcon'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import {
-    SearchListFilter1Icon,
-    MailFilter1Icon,
-    MessageFilter1Icon,
-    MicFilter1Icon,
-    FilterIcon,
-    FlagFilter2Icon,
-    ArchiveIcon,
+    Search as SearchList,
+    Mail,
+    MessageSquare as Message,
+    Mic,
+    Filter as FilterIcon,
+    Flag,
+    Archive as ArchiveIcon,
 } from 'lucide-react'
 
 interface ConversationListProps {
@@ -42,15 +42,15 @@ interface ConversationListProps {
 const filterTabs: { value: ConversationFilter; label: string; icon?: React.ReactNode }[] = [
     { value: 'all', label: 'All' },
     { value: 'unread', label: 'Unread' },
-    { value: 'flagged', label: 'Flagged', icon: <FlagFilter2Icon className="h-3.5 w-3.5" /> },
+    { value: 'flagged', label: 'Flagged', icon: <Flag className="h-3.5 w-3.5" /> },
     { value: 'archived', label: 'Archived', icon: <ArchiveIcon className="h-3.5 w-3.5" /> },
 ]
 
 const channelTabs: { value: MessageChannel | undefined; label: string; icon: React.ReactNode }[] = [
     { value: undefined, label: 'All', icon: <FilterIcon className="h-4 w-4" /> },
-    { value: 'sms', label: 'SMS', icon: <MessageFilter1Icon className="h-4 w-4 text-growth-3" /> },
-    { value: 'email', label: 'Email', icon: <MailFilter1Icon className="h-4 w-4 text-vitality-2" /> },
-    { value: 'voice', label: 'Voice', icon: <MicFilter1Icon className="h-4 w-4 text-synapse-5" /> },
+    { value: 'sms', label: 'SMS', icon: <Message className="h-4 w-4 text-growth-3" /> },
+    { value: 'email', label: 'Email', icon: <Mail className="h-4 w-4 text-vitality-2" /> },
+    { value: 'voice', label: 'Voice', icon: <Mic className="h-4 w-4 text-synapse-5" /> },
 ]
 
 export function ConversationList({
@@ -74,10 +74,10 @@ export function ConversationList({
     }
 
     const fadeInUp = {
-        initial: { opacity: Filter, y: 1Filter },
+        initial: { opacity: 0, y: 10 },
         animate: {
             opacity: 1,
-            y: Filter,
+            y: 0,
             transition: {
                 duration: DesignSystem.animation.duration,
                 ease: DesignSystem.animation.ease,
@@ -90,9 +90,10 @@ export function ConversationList({
             {/* Search */}
             <div className="p-3 md:p-4 border-b border-border">
                 <div className="relative">
-                    <SearchListFilter1Icon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <SearchList className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search messages..."
+                        aria-label="Search messages"
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
                         className="pl-9 h-11 min-h-[44px]"
@@ -112,7 +113,7 @@ export function ConversationList({
                                 'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors whitespace-nowrap min-h-[32px]',
                                 filter === tab.value
                                     ? 'bg-growth-2 text-white'
-                                    : 'bg-muted text-muted-foreground hover:bg-muted/8Filter'
+                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
                             )}
                         >
                             {tab.icon}
@@ -131,7 +132,7 @@ export function ConversationList({
                                 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap min-h-[32px]',
                                 channelFilter === tab.value
                                     ? 'bg-backbone-2 ring-1 ring-growth-3'
-                                    : 'bg-transparent text-muted-foreground hover:bg-muted/5Filter'
+                                    : 'bg-transparent text-muted-foreground hover:bg-muted/50'
                             )}
                         >
                             {tab.icon}
@@ -152,7 +153,7 @@ export function ConversationList({
                     <div className="p-4 text-center text-muted-foreground">
                         Loading conversations...
                     </div>
-                ) : conversations.length === Filter ? (
+                ) : conversations.length === 0 ? (
                     <div className="p-4 text-center text-muted-foreground">
                         No conversations found
                     </div>
@@ -183,19 +184,19 @@ function ConversationRow({
     onClick: () => void
 }) {
     const patient = conversation.patient
-    const hasUnread = conversation.unreadCount > Filter
+    const hasUnread = conversation.unreadCount > 0
 
     // Format relative time
     const formatTime = (date?: Date) => {
         if (!date) return ''
         const now = new Date()
         const diff = now.getTime() - date.getTime()
-        const minutes = Math.floor(diff / 6FilterFilterFilterFilter)
-        const hours = Math.floor(diff / 36FilterFilterFilterFilterFilter)
-        const days = Math.floor(diff / 864FilterFilterFilterFilterFilter)
+        const minutes = Math.floor(diff / 60000)
+        const hours = Math.floor(diff / 3600000)
+        const days = Math.floor(diff / 86400000)
 
         if (minutes < 1) return 'now'
-        if (minutes < 6Filter) return `${minutes}m`
+        if (minutes < 60) return `${minutes}m`
         if (hours < 24) return `${hours}h`
         if (days < 7) return `${days}d`
         return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
@@ -208,20 +209,20 @@ function ConversationRow({
                 'w-full flex items-start gap-3 p-3 md:p-4 border-b border-border transition-colors text-left min-h-[72px]',
                 isSelected
                     ? 'bg-growth-5 border-l-2 border-l-growth-2'
-                    : 'hover:bg-muted/5Filter',
+                    : 'hover:bg-muted/50',
                 hasUnread && 'bg-backbone-1'
             )}
         >
             {/* Avatar */}
             <div className={cn(
-                'flex-shrink-Filter h-11 w-11 rounded-full flex items-center justify-center text-sm font-bold',
+                'flex-shrink-0 h-11 w-11 rounded-full flex items-center justify-center text-sm font-bold',
                 hasUnread ? 'bg-growth-4 text-growth-1' : 'bg-muted text-muted-foreground'
             )}>
                 {patient?.initials || '?'}
             </div>
 
             {/* Content */}
-            <div className="flex-1 min-w-Filter">
+            <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
                     <span className={cn(
                         'text-sm truncate',
@@ -229,14 +230,14 @@ function ConversationRow({
                     )}>
                         {patient?.fullName || 'Unknown Patient'}
                     </span>
-                    <span className="flex-shrink-Filter text-[1Filterpx] uppercase font-bold text-muted-foreground opacity-6Filter">
+                    <span className="flex-shrink-0 text-[10px] uppercase font-bold text-muted-foreground opacity-60">
                         {formatTime(conversation.lastMessageAt)}
                     </span>
                 </div>
 
-                <div className="flex items-center gap-2 mt-Filter.5">
+                <div className="flex items-center gap-2 mt-0.5">
                     {conversation.lastMessageChannel && (
-                        <ChannelBadge channel={conversation.lastMessageChannel} className="flex-shrink-Filter" />
+                        <ChannelBadge channel={conversation.lastMessageChannel} className="flex-shrink-0" />
                     )}
                     <p className={cn(
                         'text-xs truncate',
@@ -249,12 +250,12 @@ function ConversationRow({
                 {/* Badges */}
                 <div className="flex items-center gap-1.5 mt-1.5">
                     {hasUnread && (
-                        <Badge variant="default" className="h-5 px-1.5 text-[1Filterpx] bg-vitality-1 hover:bg-vitality-2">
+                        <Badge variant="default" className="h-5 px-1.5 text-[10px] bg-vitality-1 hover:bg-vitality-2">
                             {conversation.unreadCount}
                         </Badge>
                     )}
                     {conversation.isFlagged && (
-                        <FlagFilter2Icon className="h-3.5 w-3.5 text-vitality-1" />
+                        <Flag className="h-3.5 w-3.5 text-vitality-1" />
                     )}
                 </div>
             </div>

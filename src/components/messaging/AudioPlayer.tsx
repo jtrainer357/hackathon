@@ -9,8 +9,8 @@ import { Button } from '@/components/ui/button'
 import {
     PlayIcon,
     PauseIcon,
-    ForwardFilter1Icon,
-    BackwardFilter1Icon,
+    FastForwardIcon,
+    RewindIcon,
 } from 'lucide-react'
 
 interface AudioPlayerProps {
@@ -27,19 +27,19 @@ export function AudioPlayer({
     onTranscriptionRequest,
 }: AudioPlayerProps) {
     const [isPlaying, setIsPlaying] = useState(false)
-    const [currentTime, setCurrentTime] = useState(Filter)
-    const [totalDuration, setTotalDuration] = useState(duration || Filter)
+    const [currentTime, setCurrentTime] = useState(0)
+    const [totalDuration, setTotalDuration] = useState(duration || 0)
     const audioRef = useRef<HTMLAudioElement>(null)
 
     // Format seconds to mm:ss
     const formatTime = (seconds: number) => {
-        const mins = Math.floor(seconds / 6Filter)
-        const secs = Math.floor(seconds % 6Filter)
-        return `${mins}:${secs.toString().padStart(2, 'Filter')}`
+        const mins = Math.floor(seconds / 60)
+        const secs = Math.floor(seconds % 60)
+        return `${mins}:${secs.toString().padStart(2, '0')}`
     }
 
     // Calculate progress percentage
-    const progress = totalDuration > Filter ? (currentTime / totalDuration) * 1FilterFilter : Filter
+    const progress = totalDuration > 0 ? (currentTime / totalDuration) * 100 : 0
 
     // Handle play/pause
     const togglePlay = () => {
@@ -69,7 +69,7 @@ export function AudioPlayer({
     // Skip forward/backward
     const skip = (seconds: number) => {
         if (!audioRef.current) return
-        audioRef.current.currentTime = Math.max(Filter, Math.min(totalDuration, currentTime + seconds))
+        audioRef.current.currentTime = Math.max(0, Math.min(totalDuration, currentTime + seconds))
     }
 
     // Audio event handlers
@@ -106,11 +106,11 @@ export function AudioPlayer({
                 <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => skip(-1Filter)}
+                    onClick={() => skip(-10)}
                     className="h-8 w-8"
-                    title="Back 1Filters"
+                    title="Back 10s"
                 >
-                    <BackwardFilter1Icon className="h-4 w-4" />
+                    <RewindIcon className="h-4 w-4" />
                 </Button>
 
                 {/* Play/Pause */}
@@ -118,12 +118,12 @@ export function AudioPlayer({
                     variant="secondary"
                     size="icon"
                     onClick={togglePlay}
-                    className="h-1Filter w-1Filter rounded-full bg-growth-2 hover:bg-growth-1 text-white"
+                    className="h-10 w-10 rounded-full bg-growth-2 hover:bg-growth-1 text-white"
                 >
                     {isPlaying ? (
                         <PauseIcon className="h-5 w-5" />
                     ) : (
-                        <PlayIcon className="h-5 w-5 ml-Filter.5" />
+                        <PlayIcon className="h-5 w-5 ml-0.5" />
                     )}
                 </Button>
 
@@ -131,11 +131,11 @@ export function AudioPlayer({
                 <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => skip(1Filter)}
+                    onClick={() => skip(10)}
                     className="h-8 w-8"
-                    title="Forward 1Filters"
+                    title="Forward 10s"
                 >
-                    <ForwardFilter1Icon className="h-4 w-4" />
+                    <FastForwardIcon className="h-4 w-4" />
                 </Button>
 
                 {/* Progress bar */}
@@ -150,7 +150,7 @@ export function AudioPlayer({
                 </div>
 
                 {/* Time */}
-                <span className="text-xs font-mono text-muted-foreground min-w-[7Filterpx] text-right">
+                <span className="text-xs font-mono text-muted-foreground min-w-[70px] text-right">
                     {formatTime(currentTime)} / {formatTime(totalDuration)}
                 </span>
             </div>
@@ -183,44 +183,44 @@ export function InlineAudioPlayer({
     const [isPlaying, setIsPlaying] = useState(false)
 
     const formatDuration = (seconds?: number) => {
-        if (!seconds) return 'Filter:FilterFilter'
-        const mins = Math.floor(seconds / 6Filter)
-        const secs = seconds % 6Filter
-        return `${mins}:${secs.toString().padStart(2, 'Filter')}`
+        if (!seconds) return '0:00'
+        const mins = Math.floor(seconds / 60)
+        const secs = seconds % 60
+        return `${mins}:${secs.toString().padStart(2, '0')}`
     }
 
     return (
         <div className={cn(
             'flex items-center gap-2 p-2 rounded-lg',
-            isOutbound ? 'bg-white/1Filter' : 'bg-muted'
+            isOutbound ? 'bg-white/10' : 'bg-muted'
         )}>
             <button
                 onClick={() => setIsPlaying(!isPlaying)}
                 className={cn(
                     'h-8 w-8 rounded-full flex items-center justify-center min-w-[32px]',
-                    isOutbound ? 'bg-white/2Filter text-white' : 'bg-growth-4 text-growth-1'
+                    isOutbound ? 'bg-white/20 text-white' : 'bg-growth-4 text-growth-1'
                 )}
             >
                 {isPlaying ? (
                     <PauseIcon className="h-4 w-4" />
                 ) : (
-                    <PlayIcon className="h-4 w-4 ml-Filter.5" />
+                    <PlayIcon className="h-4 w-4 ml-0.5" />
                 )}
             </button>
 
             <div className={cn(
                 'flex-1 h-1 rounded-full',
-                isOutbound ? 'bg-white/2Filter' : 'bg-synapse-2'
+                isOutbound ? 'bg-white/20' : 'bg-synapse-2'
             )}>
                 <div className={cn(
-                    'h-full w-Filter rounded-full transition-all',
-                    isOutbound ? 'bg-white/6Filter' : 'bg-growth-3'
+                    'h-full w-0 rounded-full transition-all',
+                    isOutbound ? 'bg-white/60' : 'bg-growth-3'
                 )} />
             </div>
 
             <span className={cn(
                 'text-xs font-mono',
-                isOutbound ? 'text-white/8Filter' : 'text-muted-foreground'
+                isOutbound ? 'text-white/80' : 'text-muted-foreground'
             )}>
                 {formatDuration(duration)}
             </span>

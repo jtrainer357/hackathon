@@ -23,7 +23,7 @@ export function useVoiceCommands() {
       action: async () => {
         // This will be handled by extracting the patient name from the full transcript
         // In the component that calls voiceSystem.start(), we'll handle the navigation
-        console.log('Patient lookup command detected')
+        // Patient lookup handled by transcript extraction
       },
     })
 
@@ -36,7 +36,7 @@ export function useVoiceCommands() {
         /home/i,
       ],
       action: () => {
-        console.log('Navigating to home')
+        // Navigate to home
         router.push('/')
       },
     })
@@ -51,7 +51,7 @@ export function useVoiceCommands() {
         /calendar/i,
       ],
       action: () => {
-        console.log('Navigating to calendar')
+        // Navigate to calendar
         router.push('/calendar')
       },
     })
@@ -66,7 +66,7 @@ export function useVoiceCommands() {
         /messages?/i,
       ],
       action: () => {
-        console.log('Navigating to communications')
+        // Navigate to communications
         router.push('/communications')
       },
     })
@@ -80,7 +80,7 @@ export function useVoiceCommands() {
         /go\s+to\s+patients?/i,
       ],
       action: () => {
-        console.log('Navigating to patients')
+        // Navigate to patients
         router.push('/patients')
       },
     })
@@ -93,7 +93,7 @@ export function useVoiceCommands() {
   // Helper function to search for a patient and navigate
   const searchAndNavigateToPatient = async (patientName: string) => {
     try {
-      console.log('Searching for patient:', patientName)
+      // Search for patient by name
 
       // Search for patient using the API
       const response = await fetch(`/api/patients/search?q=${encodeURIComponent(patientName)}`)
@@ -106,11 +106,11 @@ export function useVoiceCommands() {
 
       if (data.patients && data.patients.length > 0) {
         const patient = data.patients[0]
-        console.log('Found patient:', patient.first_name, patient.last_name)
+        // Found patient, navigating
         router.push(`/patients/${patient.id}`)
         return true
       } else {
-        console.log('No patient found')
+        // No patient found
         return false
       }
     } catch (error) {

@@ -6,11 +6,17 @@ import { Search } from "lucide-react"
 import { PracticeSwitcher } from "@/components/layout/practice-switcher"
 import { VoiceControl } from "@/components/voice/VoiceControl"
 
+declare global {
+    interface Window {
+        __voiceResultHandler?: (transcript: string) => void
+    }
+}
+
 export function DashboardHeader() {
     const handleVoiceTranscript = (transcript: string) => {
         // Call global voice handler if available
-        if (typeof window !== 'undefined' && (window as any).__voiceResultHandler) {
-            (window as any).__voiceResultHandler(transcript)
+        if (typeof window !== 'undefined' && window.__voiceResultHandler) {
+            window.__voiceResultHandler(transcript)
         }
     }
 
@@ -22,6 +28,7 @@ export function DashboardHeader() {
                     <Input
                         type="search"
                         placeholder="Search patients..."
+                        aria-label="Search patients"
                         className="w-full pl-9 rounded-full bg-card/65 backdrop-blur-sm border-none shadow-sm h-9 text-sm focus-visible:ring-1 focus-visible:ring-primary/30"
                     />
                     <div className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/70 z-10 pointer-events-none flex items-center">

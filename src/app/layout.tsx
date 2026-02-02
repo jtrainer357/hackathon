@@ -5,6 +5,7 @@ import { NavigationRail } from '@/components/layout/navigation-rail';
 import { BottomNavigation } from '@/components/layout/bottom-navigation';
 import { DashboardHeader } from '@/components/layout/dashboard-header';
 import { VoiceProvider } from '@/components/voice/VoiceProvider';
+import { Toaster } from '@/components/ui/sonner';
 
 const akkuratLL = localFont({
   src: [
@@ -87,6 +88,7 @@ export default function RootLayout({
             </div>
           </main>
           <BottomNavigation />
+          <Toaster />
         </VoiceProvider>
       </body>
     </html>

@@ -1,287 +1,280 @@
-"use client"
+"use client";
 
-// Tebra Mental Health MVP: Communications Page
-// Unified messaging inbox with patient conversations
+import React, { useState } from "react";
+import { ThreadList } from "@/components/communications/ThreadList";
+import { MessageDetail } from "@/components/communications/MessageDetail";
+import { PatientContext } from "@/components/communications/PatientContext";
+import { Message } from "@/components/communications/MessageBubble";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+    Search,
+    RotateCw,
+    Plus,
+    ArrowLeft,
+} from "lucide-react";
 
-import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { cn } from '@/lib/utils'
-import { DesignSystem } from '@/lib/design-system'
-import {
-    Conversation,
-    Message,
-    MessageChannel,
-    ConversationFilter,
-    ComposeMessageInput,
-} from '@/types/messaging'
-import {
-    ConversationList,
-    MessageThread,
-    ComposeMessage,
-} from '@/components/messaging'
-import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { ArrowLeftFilter1Icon } from 'lucide-react'
-import { getMessagingService } from '@/lib/messaging/messaging-service'
+// Mock Data
+const MOCK_THREADS = [
+    {
+        id: "1",
+        patientId: "101",
+        patientName: "Sarah Johnson",
+        avatarInitials: "SJ",
+        lastMessageTime: new Date(Date.now() - 1000 * 60 * 5), // 5 min ago
+        lastMessagePreview: "Hi Dr. Chen, I wanted to follow up on our session...",
+        channel: "email" as const,
+        unread: true,
+        starred: true,
+        archived: false,
+        isUrgent: true,
+    },
+    {
+        id: "2",
+        patientId: "102",
+        patientName: "Michael Chen",
+        avatarInitials: "MC",
+        lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
+        lastMessagePreview: "Thanks for the session today. I'll work on those...",
+        channel: "sms" as const,
+        unread: true,
+        starred: false,
+        archived: false,
+    },
+    {
+        id: "3",
+        patientId: "103",
+        patientName: "Tim Anders",
+        avatarInitials: "TA",
+        lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
+        lastMessagePreview: "Voice message (1:23)",
+        channel: "voice" as const,
+        unread: false,
+        starred: true,
+        archived: false,
+    },
+    {
+        id: "4",
+        patientId: "104",
+        patientName: "Alex Brown",
+        avatarInitials: "AB",
+        lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 days ago
+        lastMessagePreview: "Looking forward to Thursday's appointment!",
+        channel: "sms" as const,
+        unread: true,
+        starred: false,
+        archived: false,
+    },
+    {
+        id: "5",
+        patientId: "105",
+        patientName: "Emily Martinez",
+        avatarInitials: "EM",
+        lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 24 * 4), // 4 days ago
+        lastMessagePreview: "Re: Insurance coverage question",
+        channel: "email" as const,
+        unread: false,
+        starred: false,
+        archived: false,
+    },
+];
+
+const MOCK_MESSAGES: Message[] = [
+    {
+        id: "1",
+        senderId: "101",
+        senderName: "Sarah Johnson",
+        senderType: "patient",
+        content: "Hi Dr. Chen,\n\nI've been practicing the mindfulness exercises you recommended. They're really helping with my morning anxiety.\n\nCould we discuss medication options at our next session?",
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // Yesterday
+        channel: "email",
+        status: "read",
+    },
+    {
+        id: "2",
+        senderId: "provider",
+        senderName: "Dr. Chen",
+        senderType: "therapist",
+        content: "Hi Sarah,\n\nThat's wonderful to hear! I'm glad the mindfulness is helping.\n\nAbsolutely, we can explore medication as an option during Thursday's session. I'll prepare some information for you to review.",
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 22), // Yesterday later
+        channel: "email",
+        status: "delivered",
+    },
+    {
+        id: "3",
+        senderId: "101",
+        senderName: "Sarah Johnson",
+        senderType: "patient",
+        content: "Hi Dr. Chen, I wanted to follow up on our session from last week. The breathing exercises have been really effective, especially during stressful meetings at work. Thank you!",
+        timestamp: new Date(Date.now() - 1000 * 60 * 5), // 5 min ago
+        channel: "email",
+        status: "read",
+    },
+];
 
 export default function CommunicationsPage() {
-    // State
-    const [conversations, setConversations] = useState<Conversation[]>([])
-    const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
-    const [messages, setMessages] = useState<Message[]>([])
-    const [filter, setFilter] = useState<ConversationFilter>('all')
-    const [channelFilter, setChannelFilter] = useState<MessageChannel | undefined>()
-    const [searchQuery, setSearchQuery] = useState('')
-    const [isLoading, setIsLoading] = useState(true)
-    const [isLoadingMessages, setIsLoadingMessages] = useState(false)
-    const [isMobileThreadOpen, setIsMobileThreadOpen] = useState(false)
+    const [activeThreadId, setActiveThreadId] = useState<string | null>("1");
+    const [activeFilter, setActiveFilter] = useState("unread");
+    const [activeChannel, setActiveChannel] = useState("all");
+    const [mobileView, setMobileView] = useState<"list" | "detail">("list");
 
-    const messagingService = getMessagingService()
+    const activeThread = MOCK_THREADS.find((t) => t.id === activeThreadId);
 
-    // Load conversations
-    useEffect(() => {
-        async function loadConversations() {
-            setIsLoading(true)
-            try {
-                const result = await messagingService.getConversations({
-                    filter,
-                    channelCode: channelFilter,
-                    searchQuery,
-                })
-                setConversations(result.conversations)
-            } catch (error) {
-                console.error('Failed to load conversations:', error)
-            } finally {
-                setIsLoading(false)
-            }
-        }
+    const handleSelectThread = (threadId: string) => {
+        setActiveThreadId(threadId);
+        setMobileView("detail");
+    };
 
-        loadConversations()
-    }, [filter, channelFilter, searchQuery])
+    const handleBackToList = () => {
+        setMobileView("list");
+    };
 
-    // Load messages when conversation selected
-    useEffect(() => {
-        async function loadMessages() {
-            if (!selectedConversation) {
-                setMessages([])
-                return
-            }
+    const handleSendMessage = (content: string, channel: string) => {
+        // TODO: Call API to send message, optimistically update UI
+    };
 
-            setIsLoadingMessages(true)
-            try {
-                const result = await messagingService.getMessages({
-                    conversationId: selectedConversation.id,
-                })
-                setMessages(result.messages)
-
-                // Mark as read
-                await messagingService.markAsRead(selectedConversation.id)
-            } catch (error) {
-                console.error('Failed to load messages:', error)
-            } finally {
-                setIsLoadingMessages(false)
-            }
-        }
-
-        loadMessages()
-    }, [selectedConversation?.id])
-
-    // Handle conversation selection
-    const handleSelectConversation = useCallback((conversation: Conversation) => {
-        setSelectedConversation(conversation)
-        setIsMobileThreadOpen(true)
-    }, [])
-
-    // Handle send message
-    const handleSendMessage = async (input: ComposeMessageInput) => {
-        const result = await messagingService.sendMessage(input)
-
-        if (result.success) {
-            // Reload messages
-            if (selectedConversation) {
-                const messagesResult = await messagingService.getMessages({
-                    conversationId: selectedConversation.id,
-                })
-                setMessages(messagesResult.messages)
-            }
-
-            // Reload conversations to update preview
-            const conversationsResult = await messagingService.getConversations({
-                filter,
-                channelCode: channelFilter,
-                searchQuery,
-            })
-            setConversations(conversationsResult.conversations)
-        }
-    }
-
-    // Close mobile thread
-    const handleCloseMobileThread = () => {
-        setIsMobileThreadOpen(false)
-    }
+    const filters = [
+        { id: "unread", label: "Unread", count: 7 },
+        { id: "flagged", label: "Flagged", count: 3 },
+        { id: "archived", label: "Archived" },
+        { id: "all", label: "All Conversations" },
+    ];
 
     return (
-        <div className="h-[calc(1FilterFiltervh-64px)] lg:h-screen flex flex-col lg:flex-row">
-            {/* Conversation List - Full width on mobile, sidebar on desktop */}
-            <aside className={cn(
-                'w-full lg:w-8Filter xl:w-96 border-r border-border flex-shrink-Filter',
-                'lg:block',
-                selectedConversation && 'hidden lg:flex lg:flex-col'
-            )}>
-                <ConversationList
-                    conversations={conversations}
-                    selectedId={selectedConversation?.id}
-                    onSelect={handleSelectConversation}
-                    filter={filter}
-                    onFilterChange={setFilter}
-                    channelFilter={channelFilter}
-                    onChannelFilterChange={setChannelFilter}
-                    searchQuery={searchQuery}
-                    onSearchChange={setSearchQuery}
-                    isLoading={isLoading}
-                />
-            </aside>
-
-            {/* Message Thread - Desktop: Always visible | Mobile: Sheet overlay */}
-
-            {/* Desktop view */}
-            <main className="hidden lg:flex flex-col flex-1 min-w-Filter">
-                {selectedConversation ? (
-                    <>
-                        {/* Thread header */}
-                        <ThreadHeader conversation={selectedConversation} />
-
-                        {/* Messages */}
-                        <MessageThread
-                            conversation={selectedConversation}
-                            messages={messages}
-                            isLoading={isLoadingMessages}
-                        />
-
-                        {/* Compose */}
-                        <ComposeMessage
-                            conversation={selectedConversation}
-                            onSend={handleSendMessage}
-                        />
-                    </>
-                ) : (
-                    <EmptyState />
-                )}
-            </main>
-
-            {/* Mobile view - Sheet overlay */}
-            <Sheet open={isMobileThreadOpen} onOpenChange={setIsMobileThreadOpen}>
-                <SheetContent
-                    side="right"
-                    className="w-full sm:max-w-lg p-Filter flex flex-col"
-                >
-                    {selectedConversation && (
-                        <>
-                            {/* Mobile header with back button */}
-                            <SheetHeader className="p-4 border-b border-border flex-row items-center gap-3">
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={handleCloseMobileThread}
-                                    className="h-1Filter w-1Filter -ml-2"
-                                >
-                                    <ArrowLeftFilter1Icon className="h-5 w-5" />
-                                </Button>
-                                <div className="flex-1 min-w-Filter">
-                                    <SheetTitle className="text-left truncate">
-                                        {selectedConversation.patient?.fullName}
-                                    </SheetTitle>
-                                    <p className="text-xs text-muted-foreground">
-                                        {selectedConversation.patient?.phone || selectedConversation.patient?.email}
-                                    </p>
-                                </div>
-                            </SheetHeader>
-
-                            {/* Messages */}
-                            <MessageThread
-                                conversation={selectedConversation}
-                                messages={messages}
-                                isLoading={isLoadingMessages}
-                            />
-
-                            {/* Compose */}
-                            <ComposeMessage
-                                conversation={selectedConversation}
-                                onSend={handleSendMessage}
-                            />
-                        </>
+        <div className="flex flex-col h-[calc(100vh-64px)] bg-backbone-2">
+            {/* Top Bar */}
+            <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 bg-white border-b border-border flex-shrink-0">
+                {/* Mobile: Back button when viewing detail */}
+                <div className="flex items-center gap-3">
+                    {mobileView === "detail" && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleBackToList}
+                            className="md:hidden -ml-2"
+                            aria-label="Back to inbox"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                        </Button>
                     )}
-                </SheetContent>
-            </Sheet>
-        </div>
-    )
-}
-
-// Thread header for desktop
-function ThreadHeader({ conversation }: { conversation: Conversation }) {
-    const patient = conversation.patient
-
-    return (
-        <div className="flex items-center gap-4 p-4 border-b border-border bg-background">
-            {/* Avatar */}
-            <div className="h-12 w-12 rounded-full bg-growth-4 flex items-center justify-center flex-shrink-Filter">
-                <span className="text-growth-1 font-bold">
-                    {patient?.initials || '?'}
-                </span>
-            </div>
-
-            {/* Info */}
-            <div className="flex-1 min-w-Filter">
-                <h2 className="text-lg font-bold text-foreground truncate">
-                    {patient?.fullName || 'Unknown Patient'}
-                </h2>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    {patient?.phone && <span>{patient.phone}</span>}
-                    {patient?.phone && patient?.email && <span>•</span>}
-                    {patient?.email && <span className="truncate">{patient.email}</span>}
+                    <h1 className="text-lg md:text-xl font-bold text-foreground">Messages</h1>
+                </div>
+                <div className="flex items-center gap-2 md:gap-3">
+                    <Badge variant="outline" className="hidden md:flex gap-2">
+                        <RotateCw className="w-3 h-3" />
+                        Last updated: 2 min ago
+                    </Badge>
+                    <Button>
+                        <Plus data-icon="inline-start" className="w-4 h-4" />
+                        <span className="hidden sm:inline">New Message</span>
+                    </Button>
                 </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-                {/* Future: Archive, Flag, etc. */}
+            {/* Quick Filters */}
+            <div className={cn(
+                "px-4 md:px-6 py-3 bg-white border-b border-border flex-shrink-0",
+                mobileView === "detail" && "hidden md:block"
+            )}>
+                <Tabs value={activeFilter} onValueChange={setActiveFilter}>
+                    <TabsList variant="line" className="gap-2">
+                        {filters.map((filter) => (
+                            <TabsTrigger key={filter.id} value={filter.id} className="gap-2">
+                                {filter.label}
+                                {filter.count !== undefined && (
+                                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                                        {filter.count}
+                                    </Badge>
+                                )}
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
+                </Tabs>
+            </div>
+
+            {/* Controls - hidden on mobile when viewing detail */}
+            <div className={cn(
+                "px-4 md:px-6 py-3 bg-white border-b border-border flex flex-wrap items-center gap-3 md:gap-4 flex-shrink-0",
+                mobileView === "detail" && "hidden md:flex"
+            )}>
+                <div className="flex gap-2 overflow-x-auto" role="tablist" aria-label="Channel filter">
+                    {["All Channels", "SMS", "Email", "Voice"].map((label) => {
+                        const id = label.toLowerCase().split(" ")[0];
+                        return (
+                            <Button
+                                key={id}
+                                role="tab"
+                                aria-selected={activeChannel === id}
+                                onClick={() => setActiveChannel(id)}
+                                variant={activeChannel === id ? "default" : "outline"}
+                                size="sm"
+                            >
+                                {label}
+                            </Button>
+                        );
+                    })}
+                </div>
+
+                <div className="flex-1 min-w-[200px] max-w-md relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+                    <Input
+                        type="text"
+                        placeholder="Search patients, messages..."
+                        aria-label="Search messages"
+                        className="pl-9"
+                    />
+                </div>
+
+                <Badge variant="outline" className="hidden lg:inline-flex border-dashed">
+                    Select: Mark Read | Archive | Assign
+                </Badge>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="flex flex-1 overflow-hidden">
+                {/* Left Column: Thread List */}
+                <ThreadList
+                    threads={MOCK_THREADS}
+                    activeThreadId={activeThreadId}
+                    onSelectThread={handleSelectThread}
+                    className={cn(
+                        "w-full md:w-[320px] lg:w-[360px] flex-shrink-0",
+                        mobileView === "detail" && "hidden md:flex"
+                    )}
+                />
+
+                {/* Center Column: Message Detail */}
+                {activeThread ? (
+                    <MessageDetail
+                        patientId={activeThread.patientId}
+                        patientName={activeThread.patientName}
+                        messages={MOCK_MESSAGES}
+                        onSendMessage={handleSendMessage}
+                        className={cn(
+                            "flex-1 min-w-0",
+                            mobileView === "list" && "hidden md:flex"
+                        )}
+                    />
+                ) : (
+                    <div className={cn(
+                        "flex-1 flex items-center justify-center bg-backbone-1 text-synapse-3",
+                        mobileView === "list" && "hidden md:flex"
+                    )}>
+                        Select a conversation to view details
+                    </div>
+                )}
+
+                {/* Right Column: Patient Context - xl only */}
+                {activeThread && (
+                    <PatientContext
+                        patientId={activeThread.patientId}
+                        className="flex-shrink-0 hidden xl:flex"
+                    />
+                )}
             </div>
         </div>
-    )
-}
-
-// Empty state when no conversation selected
-function EmptyState() {
-    return (
-        <motion.div
-            className="flex-1 flex items-center justify-center p-8"
-            initial={{ opacity: Filter }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: DesignSystem.animation.duration }}
-        >
-            <div className="text-center max-w-sm">
-                <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-                    <svg
-                        className="h-8 w-8 text-muted-foreground"
-                        fill="none"
-                        viewBox="Filter Filter 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M8 12h.Filter1M12 12h.Filter1M16 12h.Filter1M21 12cFilter 4.418-4.Filter3 8-9 8a9.863 9.863 Filter Filter1-4.255-.949L3 2Filterl1.395-3.72C3.512 15.Filter42 3 13.574 3 12cFilter-4.418 4.Filter3-8 9-8s9 3.582 9 8z"
-                        />
-                    </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-foreground mb-1">
-                    Select a conversation
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                    Choose a conversation from the list to view messages
-                </p>
-            </div>
-        </motion.div>
-    )
+    );
 }

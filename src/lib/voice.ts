@@ -3,6 +3,26 @@
  * Enables voice-controlled navigation for the mental health MVP demo
  */
 
+interface SpeechRecognitionEvent {
+  results: SpeechRecognitionResultList
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string
+}
+
+interface SpeechRecognitionInstance {
+  continuous: boolean
+  interimResults: boolean
+  lang: string
+  onresult: ((event: SpeechRecognitionEvent) => void) | null
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null
+  onstart: (() => void) | null
+  onend: (() => void) | null
+  start: () => void
+  stop: () => void
+}
+
 export interface VoiceCommand {
   command: string
   action: () => void
@@ -20,14 +40,15 @@ export interface VoiceRecognitionOptions {
 }
 
 class VoiceCommandSystem {
-  private recognition: any = null
+  private recognition: SpeechRecognitionInstance | null = null
   private isListening: boolean = false
   private commands: VoiceCommand[] = []
   private options: VoiceRecognitionOptions = {}
 
   constructor() {
     if (typeof window !== 'undefined') {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+      const w = window as unknown as Record<string, unknown>
+      const SpeechRecognition = (w.SpeechRecognition || w.webkitSpeechRecognition) as (new () => SpeechRecognitionInstance) | undefined
       if (SpeechRecognition) {
         this.recognition = new SpeechRecognition()
         this.setupRecognition()
@@ -42,14 +63,14 @@ class VoiceCommandSystem {
     this.recognition.interimResults = true
     this.recognition.lang = 'en-US'
 
-    this.recognition.onresult = (event: any) => {
+    this.recognition.onresult = (event: SpeechRecognitionEvent) => {
       const transcript = Array.from(event.results)
-        .map((result: any) => result[0].transcript)
+        .map((result: SpeechRecognitionResult) => result[0].transcript)
         .join('')
         .toLowerCase()
         .trim()
 
-      console.log('🎤 Heard:', transcript)
+      // Voice transcript received
 
       // Call the result callback
       if (this.options.onResult) {
@@ -66,7 +87,7 @@ class VoiceCommandSystem {
       }
     }
 
-    this.recognition.onerror = (event: any) => {
+    this.recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.error('🎤 Error:', event.error)
       if (this.options.onError) {
         this.options.onError(event.error)
@@ -75,7 +96,7 @@ class VoiceCommandSystem {
 
     this.recognition.onstart = () => {
       this.isListening = true
-      console.log('🎤 Listening...')
+      // Recognition started
       if (this.options.onStart) {
         this.options.onStart()
       }
@@ -83,7 +104,7 @@ class VoiceCommandSystem {
 
     this.recognition.onend = () => {
       this.isListening = false
-      console.log('🎤 Stopped')
+      // Recognition stopped
       if (this.options.onEnd) {
         this.options.onEnd()
       }
@@ -99,20 +120,20 @@ class VoiceCommandSystem {
   }
 
   private executeCommand(transcript: string) {
-    console.log('🎯 Checking command:', transcript)
+    // Check registered commands against transcript
 
     for (const cmd of this.commands) {
       for (const pattern of cmd.patterns) {
         const match = transcript.match(pattern)
         if (match) {
-          console.log('✅ Matched command:', cmd.command)
+          // Matched command, executing action
           cmd.action()
           return
         }
       }
     }
 
-    console.log('❌ No command matched')
+    // No command matched
   }
 
   start(options?: VoiceRecognitionOptions) {
@@ -122,7 +143,7 @@ class VoiceCommandSystem {
     }
 
     if (this.isListening) {
-      console.log('Already listening')
+      // Already listening
       return false
     }
 

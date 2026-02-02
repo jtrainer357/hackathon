@@ -9,8 +9,32 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Mail, Phone, Calendar, TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 import { motion } from "framer-motion"
+import { DesignSystem } from "@/lib/design-system"
+interface PatientAppointment {
+  id?: string
+  appointment_date: string
+  appointment_time: string
+  type: string
+  status?: string
+}
 
-interface PatientDetails {
+interface PatientSessionNote {
+  id?: string
+  note_date: string
+  type?: string
+  subjective?: string
+  objective?: string
+  assessment?: string
+  plan?: string
+  therapist_name?: string
+}
+
+interface PatientOutcomeMeasure {
+  measurement_date: string
+  score: number
+}
+
+interface PatientPageData {
   id: string
   first_name: string
   last_name: string
@@ -22,15 +46,15 @@ interface PatientDetails {
   chief_complaint: string | null
   treatment_plan: string | null
   active_diagnoses: string | null
-  nextAppointment: any | null
-  recentNote: any | null
-  sessionNotes: any[]
-  appointments: any[]
-  outcomeMeasures: any
+  nextAppointment: PatientAppointment | null
+  recentNote: PatientSessionNote | null
+  sessionNotes: PatientSessionNote[]
+  appointments: PatientAppointment[]
+  outcomeMeasures: Record<string, PatientOutcomeMeasure[]>
 }
 
 // Mock data for Tim Anders
-const MOCK_TIM_ANDERS: PatientDetails = {
+const MOCK_TIM_ANDERS: PatientPageData = {
   id: "c0000000-0000-0000-0000-000000000001",
   first_name: "Tim",
   last_name: "Anders",
@@ -103,7 +127,7 @@ const MOCK_TIM_ANDERS: PatientDetails = {
 export default function PatientPage() {
   const params = useParams()
   const id = params?.id as string
-  const [patient, setPatient] = useState<PatientDetails | null>(null)
+  const [patient, setPatient] = useState<PatientPageData | null>(null)
   const [loading, setLoading] = useState(true)
   const [showFullHistory, setShowFullHistory] = useState(false)
 
@@ -116,7 +140,7 @@ export default function PatientPage() {
           setPatient(data)
         } else {
           // Use mock data if API fails
-          console.log("Using mock data for Tim Anders")
+          // API unavailable, using mock data
           setPatient(MOCK_TIM_ANDERS)
         }
       } catch (error) {
@@ -166,7 +190,7 @@ export default function PatientPage() {
     : 0
 
   const TrendIcon = trend < 0 ? TrendingDown : trend > 0 ? TrendingUp : Minus
-  const trendColor = trend < 0 ? "text-green-600" : trend > 0 ? "text-red-600" : "text-muted-foreground"
+  const trendColor = trend < 0 ? "text-success" : trend > 0 ? "text-alert" : "text-muted-foreground"
   const trendLabel = trend < 0 ? "Improving" : trend > 0 ? "Worsening" : "Stable"
 
   return (
@@ -174,10 +198,10 @@ export default function PatientPage() {
       className="p-4 md:p-8 max-w-7xl mx-auto space-y-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: DesignSystem.animation.duration }}
     >
       {/* Patient Header */}
-      <WidgetContainer>
+      <WidgetContainer title="Patient Overview" hideHeader>
         <div className="space-y-4">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
             {/* Avatar */}
@@ -373,11 +397,11 @@ export default function PatientPage() {
                   <XAxis
                     dataKey="date"
                     stroke="hsl(var(--muted-foreground))"
-                    style={{ fontSize: '12px' }}
+                    fontSize={12}
                   />
                   <YAxis
                     stroke="hsl(var(--muted-foreground))"
-                    style={{ fontSize: '12px' }}
+                    fontSize={12}
                   />
                   <Tooltip
                     contentStyle={{
@@ -390,16 +414,16 @@ export default function PatientPage() {
                   <Line
                     type="monotone"
                     dataKey="PHQ-9"
-                    stroke="hsl(174, 70%, 42%)"
+                    stroke="hsl(var(--growth-2))"
                     strokeWidth={2}
-                    dot={{ fill: 'hsl(174, 70%, 42%)', r: 4 }}
+                    dot={{ fill: 'hsl(var(--growth-2))', r: 4 }}
                   />
                   <Line
                     type="monotone"
                     dataKey="GAD-7"
-                    stroke="hsl(220, 70%, 50%)"
+                    stroke="hsl(var(--vitality-1))"
                     strokeWidth={2}
-                    dot={{ fill: 'hsl(220, 70%, 50%)', r: 4 }}
+                    dot={{ fill: 'hsl(var(--vitality-1))', r: 4 }}
                   />
                 </LineChart>
               </ResponsiveContainer>

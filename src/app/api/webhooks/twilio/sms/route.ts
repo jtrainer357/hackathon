@@ -19,10 +19,7 @@ export async function POST(request: NextRequest) {
             payload[key] = value.toString()
         })
 
-        console.log('[Twilio Webhook] Received inbound SMS:', {
-            from: payload.From,
-            body: payload.Body?.slice(0, 50),
-        })
+        // Inbound SMS received from Twilio
 
         // Verify signature (in production)
         // Note: For development, we skip this

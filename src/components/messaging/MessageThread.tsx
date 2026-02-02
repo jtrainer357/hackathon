@@ -10,7 +10,7 @@ import { DesignSystem } from '@/lib/design-system'
 import { Message, Conversation } from '@/types/messaging'
 import { ChannelIcon } from './ChannelIcon'
 import {
-    CheckmarkCircleFilter1Icon,
+    CheckCircle2Icon,
     AlertCircleIcon,
     SparklesIcon,
 } from 'lucide-react'
@@ -47,18 +47,18 @@ export function MessageThread({
     const staggerContainer = {
         animate: {
             transition: {
-                staggerChildren: Filter.Filter5,
+                staggerChildren: 0.05,
             },
         },
     }
 
     const fadeIn = {
-        initial: { opacity: Filter, y: 1Filter },
+        initial: { opacity: 0, y: 10 },
         animate: {
             opacity: 1,
-            y: Filter,
+            y: 0,
             transition: {
-                duration: Filter.3,
+                duration: DesignSystem.animation.duration,
                 ease: DesignSystem.animation.ease,
             },
         },
@@ -72,12 +72,12 @@ export function MessageThread({
         )
     }
 
-    if (messages.length === Filter) {
+    if (messages.length === 0) {
         return (
             <div className="flex-1 flex items-center justify-center p-4">
                 <div className="text-center">
                     <p className="text-muted-foreground mb-2">No messages yet</p>
-                    <p className="text-xs text-muted-foreground/7Filter">
+                    <p className="text-xs text-muted-foreground/70">
                         Start a conversation with {conversation.patient?.firstName}
                     </p>
                 </div>
@@ -97,7 +97,7 @@ export function MessageThread({
                     {/* Date separator */}
                     <div className="flex items-center gap-4">
                         <div className="flex-1 h-px bg-border" />
-                        <span className="text-[1Filterpx] uppercase font-bold text-muted-foreground tracking-wider">
+                        <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
                             {group.date}
                         </span>
                         <div className="flex-1 h-px bg-border" />
@@ -127,11 +127,11 @@ function MessageBubble({ message }: { message: Message }) {
             {/* Header: channel + time */}
             <div className="flex items-center gap-2 mb-1">
                 <ChannelIcon channel={message.channelCode} size="sm" />
-                <span className="text-[1Filterpx] uppercase font-bold text-muted-foreground opacity-6Filter">
+                <span className="text-[10px] uppercase font-bold text-muted-foreground opacity-60">
                     {formatTime(message.createdAt)}
                 </span>
                 {message.isFlaggedByAi && (
-                    <span className="flex items-center gap-1 text-[1Filterpx] text-vitality-1">
+                    <span className="flex items-center gap-1 text-[10px] text-vitality-1">
                         <SparklesIcon className="h-3 w-3" />
                         AI Flag
                     </span>
@@ -143,13 +143,13 @@ function MessageBubble({ message }: { message: Message }) {
                 'rounded-2xl px-4 py-3 shadow-sm',
                 isOutbound
                     ? 'bg-growth-2 text-white rounded-tr-md'
-                    : 'bg-synapse-1 text-foreground rounded-tl-md'
+                    : 'bg-white text-foreground rounded-tl-md'
             )}>
                 {/* Subject for emails */}
                 {message.subject && (
                     <p className={cn(
                         'text-xs font-bold mb-1',
-                        isOutbound ? 'text-white/9Filter' : 'text-foreground'
+                        isOutbound ? 'text-white/90' : 'text-foreground'
                     )}>
                         {message.subject}
                     </p>
@@ -161,9 +161,9 @@ function MessageBubble({ message }: { message: Message }) {
                 </p>
 
                 {/* Attachments placeholder */}
-                {message.attachments && message.attachments.length > Filter && (
-                    <div className="mt-2 pt-2 border-t border-white/2Filter">
-                        <span className="text-xs opacity-8Filter">
+                {message.attachments && message.attachments.length > 0 && (
+                    <div className="mt-2 pt-2 border-t border-white/20">
+                        <span className="text-xs opacity-80">
                             {message.attachments.length} attachment(s)
                         </span>
                     </div>
@@ -184,7 +184,7 @@ function MessageBubble({ message }: { message: Message }) {
             {isOutbound && (
                 <div className="flex items-center gap-1 mt-1">
                     <StatusIndicator status={message.status} />
-                    <span className="text-[1Filterpx] text-muted-foreground capitalize">
+                    <span className="text-[10px] text-muted-foreground capitalize">
                         {message.status}
                     </span>
                 </div>
@@ -193,7 +193,7 @@ function MessageBubble({ message }: { message: Message }) {
             {/* AI suggested response */}
             {message.aiSuggestedResponse && (
                 <div className="mt-2 p-2 rounded-lg bg-growth-5 border border-growth-4 max-w-full">
-                    <div className="flex items-center gap-1 text-[1Filterpx] font-bold text-growth-2 mb-1">
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-growth-2 mb-1">
                         <SparklesIcon className="h-3 w-3" />
                         AI Suggested Response
                     </div>
@@ -211,7 +211,7 @@ function StatusIndicator({ status }: { status: Message['status'] }) {
     switch (status) {
         case 'delivered':
         case 'read':
-            return <CheckmarkCircleFilter1Icon className="h-3 w-3 text-growth-3" />
+            return <CheckCircle2Icon className="h-3 w-3 text-growth-3" />
         case 'failed':
             return <AlertCircleIcon className="h-3 w-3 text-vitality-1" />
         default:
@@ -228,21 +228,21 @@ function AudioPlayerPlaceholder({
     duration?: number
 }) {
     const formatDuration = (seconds?: number) => {
-        if (!seconds) return 'Filter:FilterFilter'
-        const mins = Math.floor(seconds / 6Filter)
-        const secs = seconds % 6Filter
-        return `${mins}:${secs.toString().padStart(2, 'Filter')}`
+        if (!seconds) return '0:00'
+        const mins = Math.floor(seconds / 60)
+        const secs = seconds % 60
+        return `${mins}:${secs.toString().padStart(2, '0')}`
     }
 
     return (
-        <div className="flex items-center gap-2 p-2 rounded-lg bg-white/1Filter">
-            <button className="h-8 w-8 rounded-full bg-white/2Filter flex items-center justify-center min-w-[32px]">
+        <div className="flex items-center gap-2 p-2 rounded-lg bg-white/10">
+            <button className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center min-w-[32px]">
                 ▶
             </button>
-            <div className="flex-1 h-1 rounded-full bg-white/2Filter">
-                <div className="h-full w-1/3 rounded-full bg-white/6Filter" />
+            <div className="flex-1 h-1 rounded-full bg-white/20">
+                <div className="h-full w-1/3 rounded-full bg-white/60" />
             </div>
-            <span className="text-xs font-mono opacity-8Filter">
+            <span className="text-xs font-mono opacity-80">
                 {formatDuration(duration)}
             </span>
         </div>
@@ -267,7 +267,7 @@ function formatDateHeader(date: Date): string {
     }
 
     // This week
-    const diffDays = Math.floor((now.getTime() - messageDate.getTime()) / 864FilterFilterFilterFilterFilter)
+    const diffDays = Math.floor((now.getTime() - messageDate.getTime()) / 86400000)
     if (diffDays < 7) {
         return messageDate.toLocaleDateString('en-US', { weekday: 'long' })
     }

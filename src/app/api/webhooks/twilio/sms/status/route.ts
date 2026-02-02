@@ -15,10 +15,7 @@ export async function POST(request: NextRequest) {
             payload[key] = value.toString()
         })
 
-        console.log('[Twilio Status Webhook] Received:', {
-            messageSid: payload.MessageSid,
-            status: payload.MessageStatus,
-        })
+        // Status update received from Twilio
 
         // Parse the status update
         const statusData = await twilioProvider.parseStatusUpdate(payload)
@@ -27,17 +24,7 @@ export async function POST(request: NextRequest) {
             return new NextResponse('OK', { status: 200 })
         }
 
-        // In production: Update message status in database
-        // await supabase
-        //   .from('messages')
-        //   .update({
-        //     status: statusData.status,
-        //     status_updated_at: statusData.updatedAt,
-        //     delivery_metadata: statusData.metadata,
-        //   })
-        //   .eq('external_id', statusData.externalId)
-
-        console.log('[Twilio Status Webhook] Processed:', statusData)
+        // TODO: Update message status in database in production
 
         return new NextResponse('OK', { status: 200 })
     } catch (error) {

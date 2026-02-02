@@ -5,6 +5,7 @@ import { Mic, MicOff } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { voiceSystem } from "@/lib/voice"
+import { DesignSystem } from "@/lib/design-system"
 
 interface VoiceControlProps {
   onTranscript?: (transcript: string) => void
@@ -88,7 +89,7 @@ export function VoiceControl({ onTranscript, className }: VoiceControlProps) {
               animate={{ scale: 1.3, opacity: 0 }}
               exit={{ opacity: 0 }}
               transition={{
-                duration: 1.5,
+                duration: DesignSystem.animation.durationSlow,
                 repeat: Infinity,
                 ease: "easeOut",
               }}

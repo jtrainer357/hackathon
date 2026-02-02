@@ -388,7 +388,7 @@ Every page/component MUST be tested at these widths:
 - [ ] Invoice view/print options
 - [ ] Clear "What Goes to Patient Portal?" section (SHARED vs. PRIVATE badges)
 
-#### 🆕 Communications Page (Unified Messaging)
+#### Communications Page (Unified Messaging)
 - [ ] **Unified inbox** (SMS, email, voice messages)
   - Tab filter: All | SMS | Email | Voice
   - Search by patient name or message content
@@ -396,17 +396,18 @@ Every page/component MUST be tested at these widths:
   
 - [ ] **Message thread list**
   - Patient avatar (40px desktop, 32px mobile)
-  - Patient name, message type indicator
+  - Patient name, message type badge (SMS icon, Email icon, Phone icon)
   - Preview text (first 60 chars)
   - Timestamp (relative or date)
   - Unread badge (red dot)
   
-- [ ] **Thread expanded view**
+- [ ] **Thread expanded view** (split-screen on desktop, full-screen on mobile)
+  - Patient header with avatar, name, contact info
   - Messages chronological (oldest first)
   - Per message: timestamp, type badge, content, sender indicator
   - Reply interface at bottom (text input + send button)
   
-- [ ] **🆕 Mobile responsive**
+- [ ] **Mobile responsive**
   - Full-screen thread view on mobile
   - Swipe back to inbox
   - Bottom-anchored reply input

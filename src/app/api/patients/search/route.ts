@@ -11,21 +11,15 @@ import { createClient } from '@/lib/supabase/server';
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const query = searchParams.get('q');
+    const query = searchParams.get('q') || '';
     const limit = parseInt(searchParams.get('limit') || '50', 10);
 
-    if (!query || query.trim().length === 0) {
-      return NextResponse.json(
-        { error: 'Search query (q) is required' },
-        { status: 400 }
-      );
-    }
-
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Search in both first_name and last_name fields
     // Using ilike for case-insensitive partial matching
-    const { data: patients, error } = await supabase
+    // If query is empty, return all patients
+    let queryBuilder = supabase
       .from('patients')
       .select(`
         id,
@@ -38,13 +32,20 @@ export async function GET(request: NextRequest) {
         chief_complaint,
         active_diagnoses,
         is_active,
-        created_at
+        created_at,
+        updated_at
       `)
-      .or(`first_name.ilike.%${query}%,last_name.ilike.%${query}%`)
       .eq('is_active', true)
       .order('last_name', { ascending: true })
       .order('first_name', { ascending: true })
       .limit(limit);
+
+    // Only add the search filter if query is not empty
+    if (query && query.trim().length > 0) {
+      queryBuilder = queryBuilder.or(`first_name.ilike.%${query}%,last_name.ilike.%${query}%`);
+    }
+
+    const { data: patients, error } = await queryBuilder;
 
     if (error) {
       console.error('Supabase error:', error);

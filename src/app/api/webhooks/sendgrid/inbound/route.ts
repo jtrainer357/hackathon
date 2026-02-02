@@ -17,10 +17,7 @@ export async function POST(request: NextRequest) {
             payload[key] = value.toString()
         })
 
-        console.log('[SendGrid Webhook] Received inbound email:', {
-            from: payload.from,
-            subject: payload.subject,
-        })
+        // Inbound email received from SendGrid
 
         // Parse the inbound message
         const messageData = await sendgridProvider.parseInbound(payload)

@@ -38,18 +38,10 @@ export class TwilioSmsProvider implements ChannelProvider {
         }
 
         try {
-            // In production, use Twilio SDK:
-            // const twilio = require('twilio')(this.accountSid, this.authToken);
-            // const message = await twilio.messages.create({
-            //   body: content,
-            //   from: this.fromNumber,
-            //   to: recipientAddress,
-            // });
-
-            // For MVP, return mock success
+            // For MVP, return mock success (replace with Twilio SDK in production)
             const mockExternalId = `SM${Date.now()}${Math.random().toString(36).slice(2, 8)}`;
 
-            console.log(`[Twilio SMS] Sending to ${recipientAddress}: ${content.slice(0, 50)}...`);
+            // Mock SMS send — in production, use Twilio SDK
 
             return {
                 success: true,
@@ -162,15 +154,7 @@ export class TwilioSmsProvider implements ChannelProvider {
             return true; // Skip in development
         }
 
-        // In production, verify Twilio signature:
-        // const crypto = require('crypto');
-        // const expectedSignature = crypto
-        //   .createHmac('sha1', this.authToken)
-        //   .update(payload)
-        //   .digest('base64');
-        // return signature === expectedSignature;
-
-        console.log('[Twilio SMS] Signature verification:', signature.slice(0, 10) + '...');
-        return true; // TODO: Implement actual verification
+        // TODO: Implement actual Twilio signature verification using crypto HMAC
+        return true;
     }
 }

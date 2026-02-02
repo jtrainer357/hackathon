@@ -35,26 +35,10 @@ export class SendGridEmailProvider implements ChannelProvider {
         }
 
         try {
-            // In production, use SendGrid SDK:
-            // const sgMail = require('@sendgrid/mail');
-            // sgMail.setApiKey(this.apiKey);
-            // const [response] = await sgMail.send({
-            //   to: recipientAddress,
-            //   from: this.fromEmail,
-            //   subject: subject || 'Message from your healthcare provider',
-            //   text: content,
-            //   html: contentHtml,
-            //   attachments: attachments?.map(a => ({
-            //     filename: a.filename,
-            //     content: // base64 content,
-            //     type: a.contentType,
-            //   })),
-            // });
-
-            // For MVP, return mock success
+            // For MVP, return mock success (replace with SendGrid SDK in production)
             const mockExternalId = `SG${Date.now()}${Math.random().toString(36).slice(2, 8)}`;
 
-            console.log(`[SendGrid Email] Sending to ${recipientAddress}: ${subject || '(no subject)'}`);
+            // Mock email send — in production, use SendGrid SDK
 
             return {
                 success: true,
@@ -156,7 +140,7 @@ export class SendGridEmailProvider implements ChannelProvider {
     verifyWebhookSignature(payload: string, signature: string): boolean {
         // SendGrid uses basic auth for webhook verification
         // In production, verify the basic auth credentials
-        console.log('[SendGrid Email] Webhook signature check:', signature ? 'present' : 'missing');
+        // TODO: Implement actual SendGrid webhook verification
         return true; // TODO: Implement actual verification
     }
 }

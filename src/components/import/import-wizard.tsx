@@ -10,7 +10,7 @@ import { UploadStep } from './steps/upload-step'
 import { MappingStep } from './steps/mapping-step'
 import { PreviewStep } from './steps/preview-step'
 import { toast } from 'sonner'
-import { CheckmarkCircleFilter1Icon } from 'lucide-react'
+import { CheckCircle2Icon } from 'lucide-react'
 import type { ColumnMapping } from '@/lib/ai/gemini-import'
 
 export type ImportStep = 'source-selection' | 'upload' | 'mapping' | 'preview' | 'complete'
@@ -25,7 +25,7 @@ export function ImportWizard() {
     const [currentStep, setCurrentStep] = React.useState<ImportStep>('source-selection')
     const [batchId, setBatchId] = React.useState<string | null>(null)
     const [sourceSystem, setSourceSystem] = React.useState<string | null>(null)
-    const [progress, setProgress] = React.useState(Filter)
+    const [progress, setProgress] = React.useState(0)
     const [columnMappings, setColumnMappings] = React.useState<ColumnMapping[]>([])
     const [isAnalyzing, setIsAnalyzing] = React.useState(false)
 
@@ -39,7 +39,7 @@ export function ImportWizard() {
     const handleUploadComplete = async (newBatchId: string, files: UploadedFile[]) => {
         setBatchId(newBatchId)
         setCurrentStep('mapping')
-        setProgress(5Filter)
+        setProgress(50)
 
         // Find roster file to analyze
         const rosterFile = files.find(f => f.type === 'roster')
@@ -89,8 +89,8 @@ export function ImportWizard() {
         // Mock processing delay
         setTimeout(() => {
             setCurrentStep('complete')
-            setProgress(1FilterFilter)
-        }, 15FilterFilter)
+            setProgress(100)
+        }, 1500)
     }
 
     return (
@@ -108,7 +108,7 @@ export function ImportWizard() {
                 <Progress value={progress} className="h-2" />
             </div>
 
-            <div className="min-h-[4FilterFilterpx]">
+            <div className="min-h-[400px]">
                 {currentStep === 'source-selection' && (
                     <SourceSelectionStep onSelect={handleSourceSelected} />
                 )}
@@ -142,8 +142,8 @@ export function ImportWizard() {
 
                 {currentStep === 'complete' && (
                     <div className="text-center space-y-6 py-12">
-                        <div className="w-2Filter h-2Filter bg-vigor/1Filter rounded-full flex items-center justify-center mx-auto text-vigor">
-                            <CheckmarkCircleFilter1Icon className="w-1Filter h-1Filter" />
+                        <div className="w-20 h-20 bg-vigor/10 rounded-full flex items-center justify-center mx-auto text-vigor">
+                            <CheckCircle2Icon className="w-10 h-10" />
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-synapse-6">Import Successful!</h2>

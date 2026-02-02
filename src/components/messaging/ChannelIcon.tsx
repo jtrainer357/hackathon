@@ -5,12 +5,12 @@
 
 import { MessageChannel, CHANNEL_CONFIG } from '@/types/messaging'
 import {
-    MessageFilter1Icon,
-    MailFilter1Icon,
-    MicFilter1Icon,
+    MessageCircle,
+    MailIcon,
+    MicIcon,
     PrinterIcon,
-    NotificationFilter1Icon,
-    CommentFilter1Icon,
+    BellIcon,
+    MessageSquare,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -28,12 +28,12 @@ const iconSizes = {
 }
 
 const iconComponents: Record<MessageChannel, React.ComponentType<{ className?: string }>> = {
-    sms: MessageFilter1Icon,
-    email: MailFilter1Icon,
-    voice: MicFilter1Icon,
+    sms: MessageCircle,
+    email: MailIcon,
+    voice: MicIcon,
     fax: PrinterIcon,
-    in_app: NotificationFilter1Icon,
-    chat: CommentFilter1Icon,
+    in_app: BellIcon,
+    chat: MessageSquare,
 }
 
 export function ChannelIcon({

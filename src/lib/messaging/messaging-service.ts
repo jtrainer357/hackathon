@@ -289,7 +289,7 @@ export class MessagingService {
         }
 
         // Mock success
-        console.log(`[MessagingService] Mock send ${channelCode} to ${recipientAddress}: ${content.slice(0, 50)}...`);
+        // Mock send — in production, this path won't be reached
 
         return {
             success: true,
@@ -305,7 +305,7 @@ export class MessagingService {
         channelCode: MessageChannel,
         data: InboundMessageData
     ): Promise<{ success: boolean; messageId?: string; error?: string }> {
-        console.log(`[MessagingService] Inbound ${channelCode} from ${data.senderAddress}`);
+        // Process inbound message
 
         // In production:
         // 1. Look up patient by sender address (phone/email)
@@ -326,7 +326,7 @@ export class MessagingService {
      * Mark messages as read
      */
     async markAsRead(conversationId: string): Promise<void> {
-        console.log(`[MessagingService] Marking conversation ${conversationId} as read`);
+        // Mark conversation as read in database
 
         // In production:
         // UPDATE messages SET is_read = true, read_at = NOW()
@@ -338,14 +338,14 @@ export class MessagingService {
      * Archive a conversation
      */
     async archiveConversation(conversationId: string): Promise<void> {
-        console.log(`[MessagingService] Archiving conversation ${conversationId}`);
+        // Archive conversation in database
     }
 
     /**
      * Flag/unflag a conversation
      */
     async flagConversation(conversationId: string, isFlagged: boolean): Promise<void> {
-        console.log(`[MessagingService] ${isFlagged ? 'Flagging' : 'Unflagging'} conversation ${conversationId}`);
+        // Update flag status in database
     }
 }
 

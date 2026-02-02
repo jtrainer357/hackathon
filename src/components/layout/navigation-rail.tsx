@@ -23,7 +23,7 @@ export function NavigationRail() {
         { icon: Home, label: 'Home', href: '/' },
         { icon: Users, label: 'Patients', href: '/patients' },
         { icon: Calendar, label: 'Calendar', href: '/calendar' },
-        { icon: MessageCircle, label: 'Messages', href: '/messages' },
+        { icon: MessageCircle, label: 'Messages', href: '/communications' },
         { icon: FileText, label: 'Clinical', href: '/clinical' },
         { icon: CreditCard, label: 'Billing', href: '/billing' },
         { icon: BarChart, label: 'Reports', href: '/reports' },

@@ -43,7 +43,7 @@ const items = [
     },
     {
         title: "Messages",
-        url: "/dashboard/messages",
+        url: "/communications",
         icon: MessageSquare,
     },
     {

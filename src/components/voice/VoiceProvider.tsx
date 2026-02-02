@@ -17,10 +17,10 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     }
 
     // Store handler globally for VoiceControl to access
-    ;(window as any).__voiceResultHandler = handleVoiceResult
+    window.__voiceResultHandler = handleVoiceResult
 
     return () => {
-      delete (window as any).__voiceResultHandler
+      delete window.__voiceResultHandler
     }
   }, [searchAndNavigateToPatient])
 
