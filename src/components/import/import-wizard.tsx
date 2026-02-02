@@ -94,9 +94,9 @@ export function ImportWizard() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto p-6 space-y-8">
+        <div className="max-w-4xl mx-auto p-4 md:p-6 space-y-6 md:space-y-8">
             <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tight text-synapse-6">Data Import Wizard</h1>
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-synapse-6">Data Import Wizard</h1>
                 <p className="text-synapse-3">Migrate your patients and documents in minutes.</p>
             </div>
 
@@ -149,7 +149,7 @@ export function ImportWizard() {
                             <h2 className="text-2xl font-bold text-synapse-6">Import Successful!</h2>
                             <p className="text-synapse-3">We&apos;ve imported your patients.</p>
                         </div>
-                        <Button className="bg-vitality-1" onClick={() => window.location.href = '/'}>
+                        <Button className="bg-vitality-1 w-full sm:w-auto min-w-[200px]" onClick={() => window.location.href = '/'}>
                             Go to Dashboard
                         </Button>
                     </div>

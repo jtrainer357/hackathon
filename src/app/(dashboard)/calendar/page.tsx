@@ -79,9 +79,9 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="p-dashboard-padding max-w-dashboard-max-width mx-auto">
+    <div className="p-4 md:p-dashboard-padding max-w-dashboard-max-width mx-auto">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-synapse-1">Calendar</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-synapse-1">Calendar</h1>
         <p className="text-synapse-3 mt-2">View and manage appointments</p>
       </div>
 

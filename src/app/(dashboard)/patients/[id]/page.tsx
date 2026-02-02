@@ -313,10 +313,10 @@ export default function PatientPage() {
       {/* Tabbed Interface */}
       <Tabs defaultValue="notes" className="w-full">
         <TabsList className="w-full grid grid-cols-2 md:grid-cols-4 h-auto">
-          <TabsTrigger value="notes" className="py-3">Session Notes</TabsTrigger>
-          <TabsTrigger value="treatment" className="py-3">Treatment Plan</TabsTrigger>
-          <TabsTrigger value="outcomes" className="py-3">Outcome Measures</TabsTrigger>
-          <TabsTrigger value="communications" className="py-3">Communications</TabsTrigger>
+          <TabsTrigger value="notes" className="py-3 text-xs md:text-sm">Session Notes</TabsTrigger>
+          <TabsTrigger value="treatment" className="py-3 text-xs md:text-sm">Treatment Plan</TabsTrigger>
+          <TabsTrigger value="outcomes" className="py-3 text-xs md:text-sm">Outcome Measures</TabsTrigger>
+          <TabsTrigger value="communications" className="py-3 text-xs md:text-sm">Communications</TabsTrigger>
         </TabsList>
 
         <TabsContent value="notes" className="mt-6">
@@ -390,7 +390,7 @@ export default function PatientPage() {
               </div>
             }
           >
-            <div className="h-80">
+            <div className="h-60 md:h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
